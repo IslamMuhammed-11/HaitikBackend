@@ -1,13 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using HaitikBackend.Domain.ValueObjects;
+using HaitikBackend.Domain.Common.Results;
 
-namespace HaitikBackend.Infrastructure;
+namespace HaitikBackend.Domain.Entities;
 
-public partial class GeoZone
+public partial class GeoZone : BaseEntity
 {
-    public int Id { get; set; }
+    public int Id { get; private set; }
 
-    public string Name { get; set; } = null!;
+    public string Name { get; private set; } = null!;
+
+    public Area Polygon { get; private set; } = null!;
+
+
+    private GeoZone()
+    {
+    }
+
+    private GeoZone(string name, Area polygon)
+    {
+        Name = name;
+        Polygon = polygon;
+    }
+
+
+    public static Result<GeoZone> Create(string name, Area polygon)
+    {
+        var zone = new GeoZone(name, polygon);
+
+        return Result<GeoZone>.Success(zone);
+    }
+
+   
+
 
     public virtual ICollection<Driver> Drivers { get; set; } = new List<Driver>();
 

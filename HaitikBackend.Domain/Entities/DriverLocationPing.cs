@@ -1,19 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using HaitikBackend.Domain.ValueObjects;
+using HaitikBackend.Domain.Common.Results;
 
-namespace HaitikBackend.Infrastructure;
+namespace HaitikBackend.Domain.Entities;
 
-public partial class DriverLocationPing
+public partial class DriverLocationPing : BaseEntity
 {
-    public int Id { get; set; }
+    public int Id { get; private set; }
 
-    public int DriverId { get; set; }
+    public int DriverId { get; private set; }
 
-    public decimal Latitude { get; set; }
+    public GeoLocation Location { get; private set; } = null!;
 
-    public decimal Longitude { get; set; }
+    public DateTime Timestamp { get; private set; }
 
-    public byte[] Timestamp { get; set; } = null!;
+    private DriverLocationPing()
+    {
+    }
 
-    public virtual Driver Driver { get; set; } = null!;
+    private DriverLocationPing(int driverId, GeoLocation currentLocation, DateTime timestamp)
+    {
+        DriverId = driverId;
+        Location = currentLocation;
+        Timestamp = timestamp;
+    }
+
+    public static Result<DriverLocationPing> Create(int driverId, GeoLocation curremtLocation, DateTime timestamp)
+    {
+        var ping = new DriverLocationPing(driverId, curremtLocation, timestamp);
+
+        return Result<DriverLocationPing>.Success(ping);
+    }
+
+    public void UpdateLocation(GeoLocation location)
+    {
+        Location = location;
+        Timestamp = DateTime.UtcNow;
+    }
+
+    public virtual Driver Driver { get; private set; } = null!;
 }

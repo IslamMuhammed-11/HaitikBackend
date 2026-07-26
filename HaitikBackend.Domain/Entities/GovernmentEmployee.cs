@@ -1,17 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace HaitikBackend.Domain.Entities;
 
-namespace HaitikBackend.Infrastructure;
+using HaitikBackend.Domain.Common.Results;
 
-public partial class GovernmentEmployee
+public partial class GovernmentEmployee : BaseEntity
 {
-    public int Id { get; set; }
+    public int Id { get; private set; }
 
-    public int UserId { get; set; }
+    public int UserId { get; private set; }
 
-    public int AgencyId { get; set; }
+    public int AgencyId { get; private set; }
 
-    public virtual GovernmentAgency Agency { get; set; } = null!;
 
-    public virtual User User { get; set; } = null!;
+    private GovernmentEmployee()
+    {
+    }
+
+    private GovernmentEmployee(int userId, int agencyId)
+    {
+        UserId = userId;
+        AgencyId = agencyId;
+    }
+
+    internal static Result<GovernmentEmployee> Create(int userId, int agencyId)
+    {
+        var emp = new GovernmentEmployee(userId, agencyId);
+
+        return Result<GovernmentEmployee>.Success(emp);
+    }
+
+    public virtual GovernmentAgency Agency { get; private set; } = null!;
+
+    public virtual User User { get; private set; } = null!;
 }

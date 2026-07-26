@@ -1,13 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace HaitikBackend.Domain.Entities;
 
-namespace HaitikBackend.Infrastructure;
+using HaitikBackend.Domain.Common.Results;
 
-public partial class DeliveryAdmin
+public partial class DeliveryAdmin : BaseEntity
 {
-    public int Id { get; set; }
+    public int Id { get; private set; }
 
-    public int UserId { get; set; }
+    public int UserId { get; private set; }
 
-    public virtual User User { get; set; } = null!;
+    private DeliveryAdmin()
+    {
+    }
+
+    private DeliveryAdmin(int userId)
+    {
+        UserId = userId;
+    }
+
+    internal static Result<DeliveryAdmin> Create(int userId)
+    {
+        var admin = new DeliveryAdmin(userId);
+
+        return Result<DeliveryAdmin>.Success(admin);
+    }
+
+    public virtual User User { get; private set; } = null!;
 }

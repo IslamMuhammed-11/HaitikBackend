@@ -1,18 +1,25 @@
-﻿using HaitikBackend.Infrastructure;
-using System;
-using System.Collections.Generic;
+﻿namespace HaitikBackend.Domain.Entities;
 
-namespace HaitikBackend.Domain.Entities;
-
-public partial class BulkUploadBatch
+public partial class BulkUploadBatch : BaseEntity
 {
-    public int Id { get; set; }
+    public int Id { get; private set; }
 
-    public int UploadedBy { get; set; }
+    public int UploadedBy { get; private set; }
 
-    public short Counts { get; set; }
+    public short Counts { get; private set; }
 
-    public string Status { get; set; } = null!;
+    public string Status { get; private set; } = null!;
 
-    public virtual ICollection<BulkUploadRejectedRow> BulkUploadRejectedRows { get; set; } = new List<BulkUploadRejectedRow>();
+    private BulkUploadBatch()
+    {
+    }
+
+    private BulkUploadBatch(int uploadedBy, short counts, string status)
+    {
+        UploadedBy = uploadedBy;
+        Counts = counts;
+        Status = status;
+    }
+
+    public virtual ICollection<BulkUploadRejectedRow> BulkUploadRejectedRows { get; private set; } = new List<BulkUploadRejectedRow>();
 }

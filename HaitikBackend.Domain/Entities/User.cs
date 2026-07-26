@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using HaitikBackend.Domain.Enums;
+using HaitikBackend.Domain.Common.Results;
 
-namespace HaitikBackend.Infrastructure;
+namespace HaitikBackend.Domain.Entities;
 
-public partial class User
+public partial class User : BaseEntity
 {
     public int Id { get; private set; }
 
@@ -23,17 +23,38 @@ public partial class User
     {
     }
 
-    private User(string firstName , string lastName , string email , string phoneNumber , string passwordHash , int roleId )
+    private User(string firstName, string lastName, string email, string phoneNumber, string passwordHash, int roleId)
     {
         FirstName = firstName;
         LastName = lastName;
-        Email = email; 
+        Email = email;
         PhoneNumber = phoneNumber;
         PasswordHash = passwordHash;
         RoleId = roleId;
     }
 
 
+    public static Result<User> Create(string firstName, string lastName, string email, string phoneNumber, string passwordHash, int roleId)
+    {
+        var user = new User(firstName, lastName, email, phoneNumber, passwordHash, roleId);
+
+        return Result<User>.Success(user);
+    }
+
+    public Result<Driver> AssignAsDriver(int geoZoneId, enDriverStatus status = enDriverStatus.Offline)
+    {
+        return Driver.Create(Id, geoZoneId, status);
+    }
+
+    public Result<DeliveryAdmin> AssignAsDeliveryAdmin()
+    {
+        return DeliveryAdmin.Create(Id);
+    }
+
+    public Result<GovernmentEmployee> AssignAsGovernmentEmployee(int agencyId)
+    {
+        return GovernmentEmployee.Create(Id, agencyId);
+    }
     public void UpdateEmail(string email)
     {
         Email = email;

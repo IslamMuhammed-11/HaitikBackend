@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using HaitikBackend.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace HaitikBackend.Infrastructure;
