@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="HaitikBackend.Application/HaitikBackend.Application.csproj" />
+    <Project Path="HaitikBackend.Domain/HaitikBackend.Domain.csproj" />
+    <Project Path="HaitikBackend.Infrastructure/HaitikBackend.Infrastructure.csproj" />
+    <Project Path="HaitikBackend/HaitikBackend.API.csproj" />
+  </Folder>
+</Solution>
