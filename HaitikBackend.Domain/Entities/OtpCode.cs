@@ -6,6 +6,7 @@ public partial class OtpCode : BaseEntity
 {
     public int Id { get; private set; }
 
+    public int OrderId { get; private set; }
     public string Otphashed { get; private set; } = null!;
 
     public DateTime ExpiryDate { get; private set; }
@@ -18,8 +19,9 @@ public partial class OtpCode : BaseEntity
     {
     }
 
-    private OtpCode(string otpHashed, DateTime expiryDate, string purpose, short attemptCount)
+    private OtpCode(int orderId, string otpHashed, DateTime expiryDate, string purpose, short attemptCount)
     {
+        OrderId = orderId;
         Otphashed = otpHashed;
         ExpiryDate = expiryDate;
         Purpose = purpose;
@@ -27,10 +29,10 @@ public partial class OtpCode : BaseEntity
     }
 
 
-    public static Result<OtpCode> Create(string otpHashed, DateTime expiryDate, string purpose, short attemptCount = 0)
+    public static Result<OtpCode> Create(int orderId, string otpHashed, DateTime expiryDate, string purpose, short attemptCount = 0)
     {
         return Result<OtpCode>.Success(
-            new OtpCode(otpHashed, expiryDate, purpose, attemptCount));
+            new OtpCode(orderId, otpHashed, expiryDate, purpose, attemptCount));
     }
 
     public int RaiseAttemptCount()
@@ -39,4 +41,7 @@ public partial class OtpCode : BaseEntity
 
         return AttemptCount;
     }
+
+
+    public virtual Order Order { get; private set; } = null!;
 }

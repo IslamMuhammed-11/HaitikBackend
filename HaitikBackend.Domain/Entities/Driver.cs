@@ -1,6 +1,7 @@
 ﻿using HaitikBackend.Domain.Enums;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Errors;
+using Microsoft.Extensions.Configuration;
 
 namespace HaitikBackend.Domain.Entities;
 
@@ -13,7 +14,6 @@ public partial class Driver : BaseEntity
     public enDriverStatus Status { get; private set; }
 
     public int GeoZoneId { get; private set; }
-
 
     private Driver()
     {

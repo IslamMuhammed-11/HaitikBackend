@@ -2,7 +2,7 @@
 
 public interface IGenericRepository<T> where T : class
 {
-    Task<T?> GetById(int Id, CancellationToken ct);
+    Task<T?> GetByIdAsync(int Id, CancellationToken ct);
 
     void Add(T entity);
 

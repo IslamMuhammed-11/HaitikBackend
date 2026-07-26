@@ -8,11 +8,28 @@
 
   <ItemGroup>
     <Folder Include="Common\" />
-    <Folder Include="Features\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="Mapping\" />
-    <Folder Include="Behaviors\" />
-    <Folder Include="EventHandlers\" />
+    <Folder Include="Features\Auth\" />
+    <Folder Include="Features\Drivers\" />
+    <Folder Include="Features\GovernmentEmployees\" />
+    <Folder Include="Features\DeliveryAdmins\" />
+    <Folder Include="Features\GovernmentAgencies\" />
+    <Folder Include="Features\DeliveryProofs\" />
+    <Folder Include="Features\DriverLocationPings\" />
+    <Folder Include="Features\GeoZones\" />
+    <Folder Include="Features\BulkUploadBatch\" />
+    <Folder Include="Features\OrderStatusHistories\" />
+    <Folder Include="Features\NoitificationLogs\" />
+    <Folder Include="Features\Orders\Command\MarkAsRecived\" />
+    <Folder Include="Features\Orders\Command\MarkAsDelivering\" />
+    <Folder Include="Features\Orders\Command\MarkAsDelivered\" />
+    <Folder Include="Features\Orders\Command\PlaceOrder\" />
+    <Folder Include="Features\Orders\Queries\" />
+    <Folder Include="Features\OtpCodes\Command\CreateOtp\" />
+    <Folder Include="Features\OtpCodes\Command\Verify\" />
+    <Folder Include="Features\OtpCodes\Qureies\" />
+    <Folder Include="Features\Roles\Command\CreateRole\" />
+    <Folder Include="Features\Roles\Queries\GetRoleDetails\" />
+    <Folder Include="Features\Roles\Queries\GetAllRoles\" />
   </ItemGroup>
 
   <ItemGroup>

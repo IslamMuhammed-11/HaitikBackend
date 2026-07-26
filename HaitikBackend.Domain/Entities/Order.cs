@@ -106,6 +106,8 @@ public partial class Order : BaseEntity
 
     public virtual ICollection<DeliveryProof> DeliveryProofs { get; private set; } = new List<DeliveryProof>();
 
+    public virtual ICollection<OtpCode> OtpCodes { get; private set; } = new List<OtpCode>();
+
     public virtual GeoZone? GeoZoneNavigation { get; private set; }
 
     public virtual ICollection<OrderStatusHistory> OrderStatusHistories { get; private set; } = new List<OrderStatusHistory>();
