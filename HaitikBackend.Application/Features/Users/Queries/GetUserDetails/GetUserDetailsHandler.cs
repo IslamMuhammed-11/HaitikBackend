@@ -2,7 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Errors;
-using HaitikBackend.Domain.Interfaces;
+using HaitikBackend.Domain.Interfaces.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

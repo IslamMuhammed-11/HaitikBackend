@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using HaitikBackend.Domain.Common.Results;
-using HaitikBackend.Domain.Interfaces;
+using HaitikBackend.Domain.Interfaces.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +25,8 @@ public class GetUsersPageHandler : IRequestHandler<GetUsersPageQuery, Result<Get
 
         int skip = (request.pageNumber - 1) * request.pageSize;
 
+        int totalCount = await query.CountAsync();
+
         List<UserDetails> page = await query
             .AsNoTracking()
             .ProjectTo<UserDetails>(_mapper.ConfigurationProvider)
@@ -32,7 +34,7 @@ public class GetUsersPageHandler : IRequestHandler<GetUsersPageQuery, Result<Get
             .Take(request.pageSize)
             .ToListAsync(cancellationToken);
 
-        var response = new GetUsersPageResponse(page, request.pageSize, request.pageNumber);
+        var response = new GetUsersPageResponse(page, request.pageSize, request.pageNumber, totalCount);
 
         return Result<GetUsersPageResponse>.Success(response);
     }

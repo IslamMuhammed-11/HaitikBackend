@@ -43,11 +43,11 @@ public partial class Order : BaseEntity
     }
 
 
-    public static Result<Order> Create(string customerPhoneNumber, DateTime createdAt, GeoLocation pickupLocation, int? geoZone, int agencyId,
+    public static Order Create(string customerPhoneNumber, DateTime createdAt, GeoLocation pickupLocation, int? geoZone, int agencyId,
                                                  enOrderStatus status = enOrderStatus.Pending, int? assignedDriver = null)
     {
-        return Result<Order>.Success(
-            new Order(status, customerPhoneNumber, assignedDriver, createdAt, pickupLocation, geoZone, agencyId));
+        return 
+            new Order(status, customerPhoneNumber, assignedDriver, createdAt, pickupLocation, geoZone, agencyId);
 
 
     }
@@ -73,18 +73,18 @@ public partial class Order : BaseEntity
         return Result.Success();
     }
 
-    public Result UpdateLocation(GeoLocation pickupLocation)
+    public Result UpdateLocation(GeoLocation newPickupLocation)
     {
         if (Status != enOrderStatus.Pending)
             return Result.Failed(OrderErrors.CannotUpdateLocation);
 
         var oldLocation = PickupLocation;
 
-        PickupLocation = pickupLocation;
+        PickupLocation = newPickupLocation;
 
         //UpdateGeoZone()
 
-        Raise(new OrderLoactionChanged(Id, oldLocation, pickupLocation));
+        Raise(new OrderLoactionChanged(Id, oldLocation, newPickupLocation));
 
         return Result.Success();
     }

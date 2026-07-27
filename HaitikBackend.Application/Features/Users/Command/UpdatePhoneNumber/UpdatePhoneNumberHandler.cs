@@ -1,7 +1,7 @@
 ﻿using HaitikBackend.Application.Interfaces.PhoneNumberChecker;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Errors;
-using HaitikBackend.Domain.Interfaces;
+using HaitikBackend.Domain.Interfaces.Repositories;
 using MediatR;
 
 namespace HaitikBackend.Application.Features.Users.Command.UpdatePhoneNumber;

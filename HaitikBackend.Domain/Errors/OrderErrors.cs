@@ -13,4 +13,6 @@ public static class OrderErrors
     public static Error OrderAlreadyDelivered => Error.Create("Order.AlreadyDelivered", "Order has already been delivered and cannot be modified.", enErrorTypes.Conflict);
 
     public static Error CannotUpdateLocation => Error.Create("Order.CannotUpdateLocation", "Order location cannot be updated in its current status.", enErrorTypes.Validation);
+
+    public static Error CustomerPhoneNumberIsNotValid(string phoneNumber) => Error.Create("Order.InvalidCustomerPhoneNumber", $"The provided phone number is not valid: {phoneNumber}", enErrorTypes.Validation);
 }

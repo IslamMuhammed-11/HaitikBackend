@@ -1,7 +1,8 @@
-﻿using HaitikBackend.Domain.ValueObjects;
+﻿using HaitikBackend.Domain.Entities;
+using HaitikBackend.Domain.ValueObjects;
 using MediatR;
 
 namespace HaitikBackend.Domain.DomainEvents.OrderEvents;
 
-public sealed record OrderCreatedEvent(int orderId, DateTime createdAt, GeoLocation pickupLocatin) : INotification;
+public sealed record OrderCreatedEvent(Order order) : INotification;
 

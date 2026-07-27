@@ -1,4 +1,6 @@
 ﻿using HaitikBackend.Domain.Common.Results;
+using HaitikBackend.Domain.Enums;
+using HaitikBackend.Domain.Errors;
 
 namespace HaitikBackend.Domain.Entities;
 
@@ -11,7 +13,7 @@ public partial class OtpCode : BaseEntity
 
     public DateTime ExpiryDate { get; private set; }
 
-    public string Purpose { get; private set; } = null!;
+    public enOtpPurpose Purpose { get; private set; }
 
     public short AttemptCount { get; private set; }
 
@@ -19,7 +21,7 @@ public partial class OtpCode : BaseEntity
     {
     }
 
-    private OtpCode(int orderId, string otpHashed, DateTime expiryDate, string purpose, short attemptCount)
+    private OtpCode(int orderId, string otpHashed, DateTime expiryDate, enOtpPurpose purpose, short attemptCount)
     {
         OrderId = orderId;
         Otphashed = otpHashed;
@@ -29,19 +31,27 @@ public partial class OtpCode : BaseEntity
     }
 
 
-    public static Result<OtpCode> Create(int orderId, string otpHashed, DateTime expiryDate, string purpose, short attemptCount = 0)
+    public static OtpCode Create(int orderId, string otpHashed, DateTime expiryDate, enOtpPurpose purpose, short attemptCount = 0)
     {
-        return Result<OtpCode>.Success(
-            new OtpCode(orderId, otpHashed, expiryDate, purpose, attemptCount));
+        return new OtpCode(orderId, otpHashed, expiryDate, purpose, attemptCount);
     }
 
-    public int RaiseAttemptCount()
+    public Result RecordFailedAttempt()
     {
         AttemptCount++;
 
-        return AttemptCount;
+        if (AttemptCount >= MaximumAttempts)
+            return Result.Failed(OtpErrors.MaxAttemptsReached);
+
+
+        return Result.Failed(OtpErrors.OtpInvalid);
     }
 
+    public bool IsExpired(DateTime date) => ExpiryDate > date;
+
+    public const int MaximumAttempts = 10;
+
+    public const int OtpLength = 6;
 
     public virtual Order Order { get; private set; } = null!;
 }

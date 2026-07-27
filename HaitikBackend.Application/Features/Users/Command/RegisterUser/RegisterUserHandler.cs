@@ -3,7 +3,7 @@ using HaitikBackend.Application.Interfaces.Security;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Errors;
-using HaitikBackend.Domain.Interfaces;
+using HaitikBackend.Domain.Interfaces.Repositories;
 using MediatR;
 
 namespace HaitikBackend.Application.Features.Users.Command.RegisterUser;
