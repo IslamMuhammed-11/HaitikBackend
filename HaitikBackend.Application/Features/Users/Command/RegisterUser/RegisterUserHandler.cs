@@ -47,11 +47,11 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Result<i
             request.RoleId
         );
 
-        _userRepository.Add(user.Value!);
+        _userRepository.Add(user);
 
         await _userRepository.SaveChangesAsync(cancellationToken);
 
-        return Result<int>.Success(user.Value!.Id);
+        return Result<int>.Success(user.Id);
     }
 }
 

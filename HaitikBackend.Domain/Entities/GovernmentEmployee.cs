@@ -21,11 +21,10 @@ public partial class GovernmentEmployee : BaseEntity
         AgencyId = agencyId;
     }
 
-    internal static Result<GovernmentEmployee> Create(int userId, int agencyId)
+    internal static GovernmentEmployee Create(int userId, int agencyId)
     {
-        var emp = new GovernmentEmployee(userId, agencyId);
+        return new GovernmentEmployee(userId, agencyId);
 
-        return Result<GovernmentEmployee>.Success(emp);
     }
 
     public virtual GovernmentAgency Agency { get; private set; } = null!;

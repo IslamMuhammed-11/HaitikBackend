@@ -34,11 +34,11 @@ public partial class User : BaseEntity
     }
 
 
-    public static Result<User> Create(string firstName, string lastName, string email, string phoneNumber, string passwordHash, int roleId)
+    public static User Create(string firstName, string lastName, string email, string phoneNumber, string passwordHash, int roleId)
     {
-        var user = new User(firstName, lastName, email, phoneNumber, passwordHash, roleId);
+        return new User(firstName, lastName, email, phoneNumber, passwordHash, roleId);
 
-        return Result<User>.Success(user);
+        
     }
 
     public Result<Driver> AssignAsDriver(int geoZoneId, enDriverStatus status = enDriverStatus.Offline)
@@ -51,7 +51,7 @@ public partial class User : BaseEntity
         return DeliveryAdmin.Create(Id);
     }
 
-    public Result<GovernmentEmployee> AssignAsGovernmentEmployee(int agencyId)
+    public GovernmentEmployee AssignAsGovernmentEmployee(int agencyId)
     {
         return GovernmentEmployee.Create(Id, agencyId);
     }
