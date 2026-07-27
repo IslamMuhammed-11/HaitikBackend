@@ -11,14 +11,12 @@
     <Folder Include="Features\Auth\" />
     <Folder Include="Features\Drivers\" />
     <Folder Include="Features\DeliveryAdmins\" />
-    <Folder Include="Features\GovernmentAgencies\" />
     <Folder Include="Features\DeliveryProofs\" />
     <Folder Include="Features\DriverLocationPings\" />
     <Folder Include="Features\GeoZones\" />
     <Folder Include="Features\BulkUploadBatch\" />
-    <Folder Include="Features\GovernmentEmployees\Queries\GetEmployeeDetails\" />
-    <Folder Include="Features\GovernmentEmployees\Queries\GetEmployeesPage\" />
-    <Folder Include="Features\GovernmentEmployees\Queries\GetAgencyEmployeesPage\" />
+    <Folder Include="Features\GovernmentAgencies\Commands\" />
+    <Folder Include="Features\GovernmentAgencies\Qureies\" />
     <Folder Include="Features\NoitificationLogs\Commands\LogNotification\" />
     <Folder Include="Features\NoitificationLogs\Queries\" />
     <Folder Include="Features\OrderStatusHistories\" />
