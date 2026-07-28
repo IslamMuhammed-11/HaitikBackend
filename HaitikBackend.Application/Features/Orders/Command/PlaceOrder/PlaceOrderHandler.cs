@@ -3,21 +3,19 @@ using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.DomainEvents.OrderEvents;
 using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Errors;
-using HaitikBackend.Domain.Interfaces.Repositories;
+using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 
 namespace HaitikBackend.Application.Features.Orders.Command.PlaceOrder;
 
 public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<int>>
 {
-    private readonly IOrderRepository _orderRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IPhoneNumberChecker _phoneNumberChecker;
-    private readonly IGovernmentEmployeeRepository _governmentEmployeeRepository;
-    public PlaceOrderHandler(IOrderRepository orderRepository, IPhoneNumberChecker phoneNumberChecker, IGovernmentEmployeeRepository governmentEmployeeRepository)
+    public PlaceOrderHandler(IUnitOfWork unitOfWork, IPhoneNumberChecker phoneNumberChecker)
     {
-        _orderRepository = orderRepository;
+        _unitOfWork = unitOfWork;
         _phoneNumberChecker = phoneNumberChecker;
-        _governmentEmployeeRepository = governmentEmployeeRepository;
     }
 
     public async Task<Result<int>> Handle(PlaceOrderCommand request, CancellationToken cancellationToken)
@@ -32,11 +30,11 @@ public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<int>>
         //Will Later Calculate the GeoZone when Handeled.
         var order = Order.Create(request.CustomerPhoneNumber, DateTime.UtcNow, request.PickupLocation, null, request.employeeId);
 
-        _orderRepository.Add(order);
+        _unitOfWork.Orders.Add(order);
 
         order.Raise(new OrderCreatedEvent(order));
 
-        await _orderRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result<int>.Success(order.Id);
 
@@ -44,7 +42,7 @@ public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<int>>
 
     private async Task<Result> ValidateRequest(PlaceOrderCommand request, CancellationToken cancellationToken)
     {
-        bool employeeExists = await _governmentEmployeeRepository.DoesExistByIdAsync(request.employeeId);
+        bool employeeExists = await _unitOfWork.Employees.DoesExistByIdAsync(request.employeeId);
 
         if (!employeeExists)
             return Result.Failed(GovernmentEmployeeErrors.EmployeeNotFound(request.employeeId));

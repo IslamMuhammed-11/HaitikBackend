@@ -25,6 +25,7 @@ public partial class Order : BaseEntity
 
     public int EmployeeId { get; private set; }
 
+    public byte[] RowVersion { get; private set; } = default!;
 
     private Order()
     {
@@ -73,6 +74,11 @@ public partial class Order : BaseEntity
         return Result.Success();
     }
 
+    public OrderDriverAssignment RequestToAssignDriver(int driverId)
+    {
+        return OrderDriverAssignment.RequestAssign(driverId, Id, DateTime.UtcNow);
+    }
+
     public Result UpdateLocation(GeoLocation newPickupLocation)
     {
         if (Status != enOrderStatus.Pending)
@@ -102,7 +108,7 @@ public partial class Order : BaseEntity
         return Result.Success();
     }
 
-    public virtual GovernmentEmployee GovernmentEmployee{ get; private set; } = null!;
+    public virtual GovernmentEmployee GovernmentEmployee { get; private set; } = null!;
 
     public virtual Return? Return { get; private set; }
 
@@ -111,6 +117,8 @@ public partial class Order : BaseEntity
     public virtual ICollection<OtpCode> OtpCodes { get; private set; } = new List<OtpCode>();
 
     public virtual ICollection<OrderDriverAssignment> OrderDriverAssignments { get; private set; } = new List<OrderDriverAssignment>();
+
+    public virtual Driver? Driver { get; private set; }
 
     public virtual GeoZone? GeoZoneNavigation { get; private set; }
 

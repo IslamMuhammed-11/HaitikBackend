@@ -29,7 +29,7 @@ public partial class OrderDriverAssignment
 
     }
 
-    public static OrderDriverAssignment AssignRequest(int driverId, int orderId, DateTime createdAt)
+    public static OrderDriverAssignment RequestAssign(int driverId, int orderId, DateTime createdAt)
     {
         return new OrderDriverAssignment(driverId, orderId, enOrderDriverAssignmentStatus.Pending, createdAt, null);
     }

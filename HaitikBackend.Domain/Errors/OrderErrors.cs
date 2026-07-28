@@ -14,5 +14,7 @@ public static class OrderErrors
 
     public static Error CannotUpdateLocation => Error.Create("Order.CannotUpdateLocation", "Order location cannot be updated in its current status.", enErrorTypes.Validation);
 
+    public static Error ConcurrecyConflict => Error.Create("Order.ConcurrencyConflict", "The resource was modified by another user. Please reload and try again.", enErrorTypes.Conflict);
+
     public static Error CustomerPhoneNumberIsNotValid(string phoneNumber) => Error.Create("Order.InvalidCustomerPhoneNumber", $"The provided phone number is not valid: {phoneNumber}", enErrorTypes.Validation);
 }

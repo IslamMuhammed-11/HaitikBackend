@@ -43,9 +43,9 @@ public partial class User : BaseEntity
 
     public string FullName() => FirstName + LastName;
 
-    public Result<Driver> AssignAsDriver(int geoZoneId, enDriverStatus status = enDriverStatus.Offline)
+    public Driver AssignAsDriver(int geoZoneId, short? maximumOrdersPerDay, enDriverStatus status = enDriverStatus.Offline)
     {
-        return Driver.Create(Id, geoZoneId, status);
+        return Driver.Create(Id, maximumOrdersPerDay, geoZoneId, status);
     }
 
     public Result<DeliveryAdmin> AssignAsDeliveryAdmin()
