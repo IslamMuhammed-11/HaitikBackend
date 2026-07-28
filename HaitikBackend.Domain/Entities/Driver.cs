@@ -60,6 +60,8 @@ public partial class Driver : BaseEntity
 
     public virtual ICollection<DriverLocationPing> DriverLocationPings { get; private set; } = new List<DriverLocationPing>();
 
+    public virtual ICollection<OrderDriverAssignment> OrderDriverAssignments { get; private set; } = new List<OrderDriverAssignment>();
+
     public virtual GeoZone GeoZone { get; private set; } = null!;
 
     public virtual User User { get; private set; } = null!;

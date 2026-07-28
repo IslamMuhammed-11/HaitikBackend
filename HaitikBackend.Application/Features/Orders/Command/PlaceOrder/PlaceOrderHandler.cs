@@ -12,12 +12,12 @@ public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<int>>
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IPhoneNumberChecker _phoneNumberChecker;
-    private readonly IGovernmentAgencyRepository _governmentAgencyRepository;
-    public PlaceOrderHandler(IOrderRepository orderRepository, IPhoneNumberChecker phoneNumberChecker, IGovernmentAgencyRepository governmentAgencyRepository)
+    private readonly IGovernmentEmployeeRepository _governmentEmployeeRepository;
+    public PlaceOrderHandler(IOrderRepository orderRepository, IPhoneNumberChecker phoneNumberChecker, IGovernmentEmployeeRepository governmentEmployeeRepository)
     {
         _orderRepository = orderRepository;
         _phoneNumberChecker = phoneNumberChecker;
-        _governmentAgencyRepository = governmentAgencyRepository;
+        _governmentEmployeeRepository = governmentEmployeeRepository;
     }
 
     public async Task<Result<int>> Handle(PlaceOrderCommand request, CancellationToken cancellationToken)
@@ -30,7 +30,7 @@ public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<int>>
 
 
         //Will Later Calculate the GeoZone when Handeled.
-        var order = Order.Create(request.CustomerPhoneNumber, DateTime.UtcNow, request.PickupLocation, null, request.AgencyId);
+        var order = Order.Create(request.CustomerPhoneNumber, DateTime.UtcNow, request.PickupLocation, null, request.employeeId);
 
         _orderRepository.Add(order);
 
@@ -44,10 +44,10 @@ public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<int>>
 
     private async Task<Result> ValidateRequest(PlaceOrderCommand request, CancellationToken cancellationToken)
     {
-        bool agencyExists = await _governmentAgencyRepository.DoesExistAsync(request.AgencyId);
+        bool employeeExists = await _governmentEmployeeRepository.DoesExistByIdAsync(request.employeeId);
 
-        if (!agencyExists)
-            return Result.Failed(GovernmentAgencyErrors.AgencyNotFound(request.AgencyId));
+        if (!employeeExists)
+            return Result.Failed(GovernmentEmployeeErrors.EmployeeNotFound(request.employeeId));
 
 
         bool isNumberValid = _phoneNumberChecker.CheckPhoneNumber(request.CustomerPhoneNumber);

@@ -25,4 +25,6 @@ public partial class DeliveryAdmin : BaseEntity
     }
 
     public virtual User User { get; private set; } = null!;
+
+    public virtual ICollection<Return> Returns { get; private set; } = new List<Return>();
 }

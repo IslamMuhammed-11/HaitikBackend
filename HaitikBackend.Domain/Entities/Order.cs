@@ -23,14 +23,14 @@ public partial class Order : BaseEntity
 
     public int? GeoZone { get; private set; }
 
-    public int AgencyId { get; private set; }
+    public int EmployeeId { get; private set; }
 
 
     private Order()
     {
     }
 
-    private Order(enOrderStatus status, string customerPhoneNumber, int? assignedDriver, DateTime createdAt, GeoLocation pickupLocation, int? geoZone, int agencyId)
+    private Order(enOrderStatus status, string customerPhoneNumber, int? assignedDriver, DateTime createdAt, GeoLocation pickupLocation, int? geoZone, int employeeId)
     {
         Status = status;
         CustomerPhoneNumber = customerPhoneNumber;
@@ -38,7 +38,7 @@ public partial class Order : BaseEntity
         CreatedAt = createdAt;
         PickupLocation = pickupLocation;
         GeoZone = geoZone;
-        AgencyId = agencyId;
+        EmployeeId = employeeId;
 
     }
 
@@ -46,7 +46,7 @@ public partial class Order : BaseEntity
     public static Order Create(string customerPhoneNumber, DateTime createdAt, GeoLocation pickupLocation, int? geoZone, int agencyId,
                                                  enOrderStatus status = enOrderStatus.Pending, int? assignedDriver = null)
     {
-        return 
+        return
             new Order(status, customerPhoneNumber, assignedDriver, createdAt, pickupLocation, geoZone, agencyId);
 
 
@@ -102,11 +102,15 @@ public partial class Order : BaseEntity
         return Result.Success();
     }
 
-    public virtual GovernmentAgency Agency { get; private set; } = null!;
+    public virtual GovernmentEmployee GovernmentEmployee{ get; private set; } = null!;
+
+    public virtual Return? Return { get; private set; }
 
     public virtual ICollection<DeliveryProof> DeliveryProofs { get; private set; } = new List<DeliveryProof>();
 
     public virtual ICollection<OtpCode> OtpCodes { get; private set; } = new List<OtpCode>();
+
+    public virtual ICollection<OrderDriverAssignment> OrderDriverAssignments { get; private set; } = new List<OrderDriverAssignment>();
 
     public virtual GeoZone? GeoZoneNavigation { get; private set; }
 

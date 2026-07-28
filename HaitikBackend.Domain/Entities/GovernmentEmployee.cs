@@ -1,7 +1,5 @@
 ﻿namespace HaitikBackend.Domain.Entities;
 
-using HaitikBackend.Domain.Common.Results;
-
 public partial class GovernmentEmployee : BaseEntity
 {
     public int Id { get; private set; }
@@ -28,6 +26,8 @@ public partial class GovernmentEmployee : BaseEntity
     }
 
     public virtual GovernmentAgency Agency { get; private set; } = null!;
+
+    public virtual ICollection<Return> Returns { get; private set; } = new List<Return>();
 
     public virtual User User { get; private set; } = null!;
 }

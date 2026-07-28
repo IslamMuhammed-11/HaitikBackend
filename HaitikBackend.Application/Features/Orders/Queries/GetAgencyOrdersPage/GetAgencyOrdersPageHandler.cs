@@ -24,7 +24,7 @@ public class GetAgencyOrdersPageHandler : IRequestHandler<GetAgencyOrdersPageQue
 
         var skip = (request.PageNumber - 1) * request.PageSize;
 
-        var query = _orderRepository.Query().Where(e => e.AgencyId == request.AgencyId);
+        var query = _orderRepository.Query().Where(e => e.EmployeeId == request.AgencyId);
 
         if (request.Status is not null)
             query = query.Where(e => e.Status == request.Status);

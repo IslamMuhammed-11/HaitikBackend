@@ -9,8 +9,10 @@ public class OrderProfile : Profile
     public OrderProfile()
     {
         CreateMap<Order, OrderDetails>()
+            .ForMember(dest => dest.EmployeeName, opt => opt
+            .MapFrom(e => e.GovernmentEmployee.User.FullName()))
             .ForMember(dest => dest.AgencyName, opt => opt
-            .MapFrom(e => e.Agency.Name))
+            .MapFrom(e => e.GovernmentEmployee.Agency.Name))
             .ReverseMap();
     }
 }

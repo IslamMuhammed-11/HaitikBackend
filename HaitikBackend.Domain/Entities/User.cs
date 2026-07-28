@@ -1,5 +1,5 @@
-﻿using HaitikBackend.Domain.Enums;
-using HaitikBackend.Domain.Common.Results;
+﻿using HaitikBackend.Domain.Common.Results;
+using HaitikBackend.Domain.Enums;
 
 namespace HaitikBackend.Domain.Entities;
 
@@ -38,8 +38,10 @@ public partial class User : BaseEntity
     {
         return new User(firstName, lastName, email, phoneNumber, passwordHash, roleId);
 
-        
+
     }
+
+    public string FullName() => FirstName + LastName;
 
     public Result<Driver> AssignAsDriver(int geoZoneId, enDriverStatus status = enDriverStatus.Offline)
     {
@@ -55,6 +57,9 @@ public partial class User : BaseEntity
     {
         return GovernmentEmployee.Create(Id, agencyId);
     }
+
+    public RefreshToken CreateRefreshToken(string tokenHash, DateTime expiry) => RefreshToken.Create(Id, tokenHash, expiry);
+
     public void UpdateEmail(string email)
     {
         Email = email;
@@ -79,6 +84,8 @@ public partial class User : BaseEntity
     public virtual ICollection<Driver> Drivers { get; private set; } = new List<Driver>();
 
     public virtual ICollection<GovernmentEmployee> GovernmentEmployees { get; private set; } = new List<GovernmentEmployee>();
+
+    public virtual RefreshToken? RefreshToken { get; private set; }
 
     public virtual Role Role { get; private set; } = null!;
 }

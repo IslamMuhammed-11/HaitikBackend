@@ -1,10 +1,10 @@
-using System.Threading;
-using System.Threading.Tasks;
 using HaitikBackend.Domain.Entities;
 
 namespace HaitikBackend.Domain.Interfaces.Repositories;
 
 public interface IGovernmentEmployeeRepository : IGenericRepository<GovernmentEmployee>
 {
-    Task<bool> DoesExist(int userId, CancellationToken ct);
+    Task<bool> DoesExistByUserIdAsync(int userId, CancellationToken ct = default);
+
+    Task<bool> DoesExistByIdAsync(int id, CancellationToken ct = default);
 }

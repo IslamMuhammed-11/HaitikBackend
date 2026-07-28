@@ -17,11 +17,9 @@ public partial class GovernmentAgency : BaseEntity
         Name = name;
     }
 
-    public static Result<GovernmentAgency> Create(string name)
+    public static GovernmentAgency Create(string name)
     {
-        var agency = new GovernmentAgency(name);
-
-        return Result<GovernmentAgency>.Success(agency);
+        return new GovernmentAgency(name);
     }
 
     public virtual ICollection<GovernmentEmployee> GovernmentEmployees { get; private set; } = new List<GovernmentEmployee>();

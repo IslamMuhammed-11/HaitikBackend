@@ -9,14 +9,13 @@
   <ItemGroup>
     <Folder Include="Common\" />
     <Folder Include="Features\Auth\" />
-    <Folder Include="Features\Drivers\" />
     <Folder Include="Features\DeliveryAdmins\" />
     <Folder Include="Features\DeliveryProofs\" />
     <Folder Include="Features\DriverLocationPings\" />
+    <Folder Include="Features\Drivers\Commands\AssignUserAsDriver\" />
+    <Folder Include="Features\Drivers\Queries\" />
     <Folder Include="Features\GeoZones\" />
     <Folder Include="Features\BulkUploadBatch\" />
-    <Folder Include="Features\GovernmentAgencies\Commands\" />
-    <Folder Include="Features\GovernmentAgencies\Qureies\" />
     <Folder Include="Features\NoitificationLogs\Commands\LogNotification\" />
     <Folder Include="Features\NoitificationLogs\Queries\" />
     <Folder Include="Features\OrderStatusHistories\" />
