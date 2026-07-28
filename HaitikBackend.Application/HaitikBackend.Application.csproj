@@ -16,6 +16,8 @@
     <Folder Include="Features\Drivers\Queries\" />
     <Folder Include="Features\GeoZones\" />
     <Folder Include="Features\BulkUploadBatch\" />
+    <Folder Include="Features\OrderDriverAssignment\" />
+    <Folder Include="Features\Return\" />
     <Folder Include="Features\NoitificationLogs\Commands\LogNotification\" />
     <Folder Include="Features\NoitificationLogs\Queries\" />
     <Folder Include="Features\OrderStatusHistories\" />
