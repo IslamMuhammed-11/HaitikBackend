@@ -41,7 +41,7 @@ public class RequestAssignmentHandler : IRequestHandler<RequestAssignmentCommand
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var offer = new DriverOffer(order.Id, order.PickupLocation);
+        var offer = new DriverOffer(order.Id, order.PickupLocation, assignmentRequest.CreatedAt, null);
 
         return Result<DriverOffer>.Success(offer);
     }

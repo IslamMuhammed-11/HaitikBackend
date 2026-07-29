@@ -1,26 +1,26 @@
 ﻿using HaitikBackend.Application.Interfaces.PhoneNumberChecker;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Errors;
-using HaitikBackend.Domain.Interfaces.Repositories;
+using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 
 namespace HaitikBackend.Application.Features.Users.Command.UpdatePhoneNumber;
 
 public class UpdatePhoneNumberHandler : IRequestHandler<UpdatePhoneNumberCommand, Result>
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IPhoneNumberChecker _phoneNumberChecker;
 
-    public UpdatePhoneNumberHandler(IUserRepository userRepository
+    public UpdatePhoneNumberHandler(IUnitOfWork unitOfWork
                                         , IPhoneNumberChecker phoneNumberChecker)
     {
-        _userRepository = userRepository;
+        _unitOfWork = unitOfWork;
         _phoneNumberChecker = phoneNumberChecker;
     }
 
     public async Task<Result> Handle(UpdatePhoneNumberCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(request.Id, cancellationToken);
+        var user = await _unitOfWork.Users.GetByIdAsync(request.Id, cancellationToken);
 
         if (user == null)
             return Result.Failed(UserErrors.UserNotFound(request.Id));
@@ -30,7 +30,7 @@ public class UpdatePhoneNumberHandler : IRequestHandler<UpdatePhoneNumberCommand
 
         user.UpdatePhoneNumber(request.PhoneNumber);
 
-        await _userRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

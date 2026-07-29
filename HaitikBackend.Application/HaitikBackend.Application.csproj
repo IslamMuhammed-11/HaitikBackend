@@ -11,12 +11,10 @@
     <Folder Include="Features\Auth\" />
     <Folder Include="Features\DeliveryAdmins\" />
     <Folder Include="Features\DeliveryProofs\" />
-    <Folder Include="Features\DriverLocationPings\" />
+    <Folder Include="Features\DriverLocationPings\Commands\" />
+    <Folder Include="Features\DriverLocationPings\Queries\" />
     <Folder Include="Features\GeoZones\" />
     <Folder Include="Features\BulkUploadBatch\" />
-    <Folder Include="Features\OrderDriverAssignment\Queries\GetPendingOffers\" />
-    <Folder Include="Features\OrderDriverAssignment\Queries\GetExpiredOffers\" />
-    <Folder Include="Features\OrderDriverAssignment\Queries\GetDriverOffer\" />
     <Folder Include="Features\Return\" />
     <Folder Include="Features\NoitificationLogs\Commands\LogNotification\" />
     <Folder Include="Features\NoitificationLogs\Queries\" />

@@ -23,10 +23,37 @@ public class AcceptAssignmentHandler : IRequestHandler<AcceptAssignmentCommand, 
         if (assignment is null)
             return Result.Failed(OrderDriverAssignmentErrors.AssignmentNotFound(request.OrderId, request.DriverId));
 
-        assignment.MarkAsAccepted();
+        var order = await _unitOfWork.Orders.GetByIdAsync(request.OrderId, cancellationToken);
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        if (order is null)
+            return Result.Failed(OrderErrors.OrderNotFound(request.OrderId));
 
-        return Result.Success();
+        return await Execute(order, assignment, cancellationToken);
+
+    }
+
+
+
+    private async Task<Result> Execute(Order order, HaitikBackend.Domain.Entities.OrderDriverAssignment assignment, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = order.AssignDriver(assignment.DriverId);
+
+            if (!result.IsSuccess)
+                return result;
+
+            assignment.MarkAsAccepted();
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return Result.Success();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Result.Failed(OrderErrors.ConcurrecyConflict);
+        }
+
+
     }
 }

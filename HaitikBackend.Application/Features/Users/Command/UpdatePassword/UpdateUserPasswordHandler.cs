@@ -35,7 +35,7 @@ public class UpdateUserPasswordHandler : IRequestHandler<UpdateUserPasswordComma
 
         user.ChangePassword(newPasswordHash);
 
-        await _unitOfWork.Users.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

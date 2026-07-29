@@ -1,41 +1,36 @@
 using HaitikBackend.Domain.Common.Results;
-using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Errors;
-using HaitikBackend.Domain.Interfaces.Repositories;
+using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 
 namespace HaitikBackend.Application.Features.GovernmentEmployees.Commands.AssignUserAsEmployee;
 
 public class AssignUserAsEmployeeHandler : IRequestHandler<AssignUserAsEmployeeCommand, Result>
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IGovernmentAgencyRepository _governmentAgencyRepository;
-    private readonly IGovernmentEmployeeRepository _governmentEmployeeRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public AssignUserAsEmployeeHandler(IUserRepository userRepository, IGovernmentAgencyRepository governmentAgencyRepository, IGovernmentEmployeeRepository governmentEmployeeRepository)
+    public AssignUserAsEmployeeHandler(IUnitOfWork unitOfWork)
     {
-        _userRepository = userRepository;
-        _governmentAgencyRepository = governmentAgencyRepository;
-        _governmentEmployeeRepository = governmentEmployeeRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result> Handle(AssignUserAsEmployeeCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
+        var user = await _unitOfWork.Users.GetByIdAsync(request.UserId, cancellationToken);
 
         if (user is null)
             return Result.Failed(UserErrors.UserNotFound(request.UserId));
 
-        var agencyExists = await _governmentAgencyRepository.DoesExistAsync(request.AgencyId);
+        var agencyExists = await _unitOfWork.Agencies.DoesExistAsync(request.AgencyId);
 
         if (!agencyExists)
             return Result.Failed(GovernmentAgencyErrors.AgencyNotFound(request.AgencyId));
 
         var governmentEmployee = user.AssignAsGovernmentEmployee(request.AgencyId);
 
-        _governmentEmployeeRepository.Add(governmentEmployee);
+        _unitOfWork.Employees.Add(governmentEmployee);
 
-        await _governmentEmployeeRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }
