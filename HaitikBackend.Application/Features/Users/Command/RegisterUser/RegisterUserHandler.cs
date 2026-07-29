@@ -49,7 +49,7 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Result<i
 
         _unitOfWork.Users.Add(user);
 
-        await _unitOfWork.Users.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result<int>.Success(user.Id);
     }

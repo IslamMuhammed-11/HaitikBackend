@@ -3,7 +3,7 @@ using AutoMapper.QueryableExtensions;
 using HaitikBackend.Application.Features.GovernmentEmployees.Queries.Responses;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Errors;
-using HaitikBackend.Domain.Interfaces.Repositories;
+using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,18 +11,18 @@ namespace HaitikBackend.Application.Features.GovernmentEmployees.Queries.GetEmpl
 
 public class GetEmployeeDetailsHandler : IRequestHandler<GetEmployeeDetailsQuery, Result<EmployeeDetails>>
 {
-    private readonly IGovernmentEmployeeRepository _governmentEmployeeRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public GetEmployeeDetailsHandler(IGovernmentEmployeeRepository governmentEmployeeRepository, IMapper mapper)
+    public GetEmployeeDetailsHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        _governmentEmployeeRepository = governmentEmployeeRepository;
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
 
     public async Task<Result<EmployeeDetails>> Handle(GetEmployeeDetailsQuery request, CancellationToken cancellationToken)
     {
-        var query = _governmentEmployeeRepository.Query();
+        var query = _unitOfWork.Employees.Query();
 
         var employee = await query
             .AsNoTracking()

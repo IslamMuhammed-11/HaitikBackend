@@ -3,28 +3,30 @@ using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.DomainEvents.OTP;
 using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Errors;
-using HaitikBackend.Domain.Interfaces.Repositories;
+using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 
 namespace HaitikBackend.Application.Features.Otp.VerifyOtp;
 
 public class VerifyOtpHandler : IRequestHandler<VerifyOtpCommand, Result>
 {
-    private readonly IOtpCodeRepository _otpRepository;
-    private readonly IPasswordHasher _passwordHasher;
-    private readonly IOrderRepository _orderRepository;
 
-    public VerifyOtpHandler(IOtpCodeRepository otpRepository, IPasswordHasher passwordHasher, IOrderRepository orderRepository)
+    private readonly IPasswordHasher _passwordHasher;
+    private readonly IUnitOfWork _unitOfWork;
+
+
+    public VerifyOtpHandler( IPasswordHasher passwordHasher, IUnitOfWork unitOfWork)
     {
-        _otpRepository = otpRepository;
+
         _passwordHasher = passwordHasher;
-        _orderRepository = orderRepository;
+        _unitOfWork = unitOfWork;
+
     }
 
     public async Task<Result> Handle(VerifyOtpCommand request, CancellationToken cancellationToken)
     {
 
-        var otpEntity = await _otpRepository.GetByOrderIdAsync(request.OrderId, request.Purpose, cancellationToken);
+        var otpEntity = await _unitOfWork.OtpCodes.GetByOrderIdAsync(request.OrderId, request.Purpose, cancellationToken);
 
 
         var validatingResult = ValidateOTPEntity(otpEntity);
@@ -40,7 +42,7 @@ public class VerifyOtpHandler : IRequestHandler<VerifyOtpCommand, Result>
 
         otpEntity.Raise(new OtpVerifiedEvent(otpEntity.OrderId, otpEntity.Id));
 
-        await _otpRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }
@@ -61,7 +63,7 @@ public class VerifyOtpHandler : IRequestHandler<VerifyOtpCommand, Result>
 
         var result = otpEntity.RecordFailedAttempt();
 
-        await _otpRepository.SaveChangesAsync(ct);
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return result;
     }

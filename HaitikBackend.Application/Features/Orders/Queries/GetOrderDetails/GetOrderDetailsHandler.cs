@@ -3,7 +3,7 @@ using AutoMapper.QueryableExtensions;
 using HaitikBackend.Application.Features.Users.Queries.GetUsersPage;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Errors;
-using HaitikBackend.Domain.Interfaces.Repositories;
+using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,18 +11,18 @@ namespace HaitikBackend.Application.Features.Orders.Queries.GetOrderDetails;
 
 public class GetOrderDetailsHandler : IRequestHandler<GetOrderDetailsQuery, Result<UserDetails>>
 {
-    private readonly IOrderRepository _orderRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public GetOrderDetailsHandler(IOrderRepository orderRepository, IMapper mapper)
+    public GetOrderDetailsHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        _orderRepository = orderRepository;
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
 
     public async Task<Result<UserDetails>> Handle(GetOrderDetailsQuery request, CancellationToken cancellationToken)
     {
-        var query = _orderRepository.Query();
+        var query = _unitOfWork.Orders.Query();
 
         var order = await query
             .AsNoTracking()

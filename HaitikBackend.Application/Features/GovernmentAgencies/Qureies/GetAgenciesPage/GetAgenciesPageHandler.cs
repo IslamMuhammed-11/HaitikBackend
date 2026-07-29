@@ -2,7 +2,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using HaitikBackend.Application.Features.GovernmentAgencies.Qureies.Responses;
 using HaitikBackend.Domain.Common.Results;
-using HaitikBackend.Domain.Interfaces.Repositories;
+using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,12 +10,12 @@ namespace HaitikBackend.Application.Features.GovernmentAgencies.Qureies.GetAgenc
 
 public class GetAgenciesPageHandler : IRequestHandler<GetAgenciesPageQuery, Result<AgenciesPageResponse>>
 {
-    private readonly IGovernmentAgencyRepository _governmentAgencyRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public GetAgenciesPageHandler(IGovernmentAgencyRepository governmentAgencyRepository, IMapper mapper)
+    public GetAgenciesPageHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        _governmentAgencyRepository = governmentAgencyRepository;
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
 
@@ -23,7 +23,7 @@ public class GetAgenciesPageHandler : IRequestHandler<GetAgenciesPageQuery, Resu
     {
         var skip = (request.PageNumber - 1) * request.PageSize;
 
-        var query = _governmentAgencyRepository.Query();
+        var query = _unitOfWork.Agencies.Query();
 
         int totalCount = await query.CountAsync(cancellationToken);
 

@@ -12,5 +12,4 @@ public interface IGenericRepository<T> where T : class
 
     IQueryable<T> Query();
 
-    Task<int> SaveChangesAsync(CancellationToken ct);
 }

@@ -3,7 +3,7 @@ using AutoMapper.QueryableExtensions;
 using HaitikBackend.Application.Features.Orders.Queries.Responses;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Enums;
-using HaitikBackend.Domain.Interfaces.Repositories;
+using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,12 +11,12 @@ namespace HaitikBackend.Application.Features.Orders.Queries.GetAllOrdersPage;
 
 public class GetAllOrdersPageHandler : IRequestHandler<GetAllOrdersPageQuery, Result<OrdersPageResponse>>
 {
-    private readonly IOrderRepository _orderRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public GetAllOrdersPageHandler(IOrderRepository orderRepository, IMapper mapper)
+    public GetAllOrdersPageHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        _orderRepository = orderRepository;
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
 
@@ -24,7 +24,7 @@ public class GetAllOrdersPageHandler : IRequestHandler<GetAllOrdersPageQuery, Re
     {
         var skip = (request.PageNumber - 1) * request.PageSize;
 
-        var query = _orderRepository.Query();
+        var query = _unitOfWork.Orders.Query();
 
         if (request.Status is not null)
             query = query.Where(e => e.Status == request.Status);

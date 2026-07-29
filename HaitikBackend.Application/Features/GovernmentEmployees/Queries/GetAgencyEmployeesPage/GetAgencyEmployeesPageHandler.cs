@@ -2,7 +2,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using HaitikBackend.Application.Features.GovernmentEmployees.Queries.Responses;
 using HaitikBackend.Domain.Common.Results;
-using HaitikBackend.Domain.Interfaces.Repositories;
+using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,12 +10,12 @@ namespace HaitikBackend.Application.Features.GovernmentEmployees.Queries.GetAgen
 
 public class GetAgencyEmployeesPageHandler : IRequestHandler<GetAgencyEmployeesPageQuery, Result<EmployeesPageResponse>>
 {
-    private readonly IGovernmentEmployeeRepository _governmentEmployeeRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public GetAgencyEmployeesPageHandler(IGovernmentEmployeeRepository governmentEmployeeRepository, IMapper mapper)
+    public GetAgencyEmployeesPageHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        _governmentEmployeeRepository = governmentEmployeeRepository;
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
 
@@ -23,7 +23,7 @@ public class GetAgencyEmployeesPageHandler : IRequestHandler<GetAgencyEmployeesP
     {
         var skip = (request.PageNumber - 1) * request.PageSize;
 
-        var query = _governmentEmployeeRepository.Query().Where(e => e.AgencyId == request.AgencyId);
+        var query = _unitOfWork.Employees.Query().Where(e => e.AgencyId == request.AgencyId);
 
         int totalCount = await query.CountAsync(cancellationToken);
 

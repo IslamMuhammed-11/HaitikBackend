@@ -1,23 +1,22 @@
 using HaitikBackend.Domain.Common.Results;
-using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Errors;
-using HaitikBackend.Domain.Interfaces.Repositories;
+using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 
 namespace HaitikBackend.Application.Features.Orders.Command.MarkAsDelivered;
 
 public class MarkAsDeliveredHandler : IRequestHandler<MarkAsDeliveredCommand, Result>
 {
-    private readonly IOrderRepository _orderRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public MarkAsDeliveredHandler(IOrderRepository orderRepository)
+    public MarkAsDeliveredHandler(IUnitOfWork unitOfWork)
     {
-        _orderRepository = orderRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result> Handle(MarkAsDeliveredCommand request, CancellationToken cancellationToken)
     {
-        var order = await _orderRepository.GetByIdAsync(request.OrderId, cancellationToken);
+        var order = await _unitOfWork.Orders.GetByIdAsync(request.OrderId, cancellationToken);
 
         if (order is null)
             return Result.Failed(OrderErrors.OrderNotFound(request.OrderId));
@@ -27,7 +26,7 @@ public class MarkAsDeliveredHandler : IRequestHandler<MarkAsDeliveredCommand, Re
         if (!result.IsSuccess)
             return result;
 
-        await _orderRepository.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }
