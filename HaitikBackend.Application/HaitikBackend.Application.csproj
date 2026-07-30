@@ -9,17 +9,12 @@
   <ItemGroup>
     <Folder Include="Common\" />
     <Folder Include="Features\Auth\" />
-    <Folder Include="Features\DeliveryAdmins\" />
     <Folder Include="Features\DeliveryProofs\Commands\" />
     <Folder Include="Features\DeliveryProofs\Queries\" />
-    <Folder Include="Features\GeoZones\" />
     <Folder Include="Features\BulkUploadBatch\" />
     <Folder Include="Features\NoitificationLogs\Commands\LogNotification\" />
     <Folder Include="Features\NoitificationLogs\Queries\" />
     <Folder Include="Features\Orders\Command\BulkUpload\" />
-    <Folder Include="Features\Roles\Command\CreateRole\" />
-    <Folder Include="Features\Roles\Queries\GetRoleDetails\" />
-    <Folder Include="Features\Roles\Queries\GetAllRoles\" />
   </ItemGroup>
 
   <ItemGroup>
