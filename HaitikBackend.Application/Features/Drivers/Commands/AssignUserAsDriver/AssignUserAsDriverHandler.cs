@@ -33,6 +33,6 @@ public class AssignUserAsDriverHandler : IRequestHandler<AssignUserAsDriverComma
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result<int>.Success(driver.Id);
+        return Result<int>.Success(driver.UserId);
     }
 }

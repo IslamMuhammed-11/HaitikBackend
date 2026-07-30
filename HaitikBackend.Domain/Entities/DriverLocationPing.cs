@@ -1,11 +1,9 @@
 ﻿using HaitikBackend.Domain.ValueObjects;
-using HaitikBackend.Domain.Common.Results;
 
 namespace HaitikBackend.Domain.Entities;
 
 public partial class DriverLocationPing : BaseEntity
 {
-    public int Id { get; private set; }
 
     public int DriverId { get; private set; }
 
@@ -24,17 +22,16 @@ public partial class DriverLocationPing : BaseEntity
         Timestamp = timestamp;
     }
 
-    public static Result<DriverLocationPing> Create(int driverId, GeoLocation curremtLocation, DateTime timestamp)
+    public static DriverLocationPing Create(int driverId, GeoLocation curremtLocation, DateTime timestamp)
     {
-        var ping = new DriverLocationPing(driverId, curremtLocation, timestamp);
+        return new DriverLocationPing(driverId, curremtLocation, timestamp);
 
-        return Result<DriverLocationPing>.Success(ping);
     }
 
-    public void UpdateLocation(GeoLocation location)
+    public void UpdateLocation(GeoLocation location, DateTime timestamp)
     {
         Location = location;
-        Timestamp = DateTime.UtcNow;
+        Timestamp = timestamp;
     }
 
     public virtual Driver Driver { get; private set; } = null!;

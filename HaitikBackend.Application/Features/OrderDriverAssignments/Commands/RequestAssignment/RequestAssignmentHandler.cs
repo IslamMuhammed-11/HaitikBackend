@@ -35,13 +35,13 @@ public class RequestAssignmentHandler : IRequestHandler<RequestAssignmentCommand
         if (order is null)
             return Result<DriverOffer>.Failed(OrderErrors.OrderNotFound(request.OrderId));
 
-        var assignmentRequest = order.RequestToAssignDriver(driver.Id);
+        var assignmentRequest = order.RequestToAssignDriver(driver.UserId);
 
         _unitOfWork.OrderDriverAssignments.Add(assignmentRequest);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var offer = new DriverOffer(order.Id, order.PickupLocation, assignmentRequest.CreatedAt, null);
+        var offer = new DriverOffer(order.Id, order.DeliveryLocation, assignmentRequest.CreatedAt, null);
 
         return Result<DriverOffer>.Success(offer);
     }
@@ -54,12 +54,12 @@ public class RequestAssignmentHandler : IRequestHandler<RequestAssignmentCommand
         if (driver.MaximumOrdersPerDay is null)
             return Result.Success();
 
-        var activeOrdersQuery = _unitOfWork.Orders.Query().Where(o => o.AssignedDriver == driver.Id && o.Status != enOrderStatus.Delivered);
+        var activeOrdersQuery = _unitOfWork.Orders.Query().Where(o => o.AssignedDriver == driver.UserId && o.Status != enOrderStatus.Delivered);
 
         var activeCount = await activeOrdersQuery.CountAsync(cancellationToken);
 
         if (activeCount >= driver.MaximumOrdersPerDay.Value)
-            return Result<DriverOffer>.Failed(DriverErrors.DriverReachedMaximumOrdersPerDay(driver.Id));
+            return Result<DriverOffer>.Failed(DriverErrors.DriverReachedMaximumOrdersPerDay(driver.UserId));
 
         return Result.Success();
     }

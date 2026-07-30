@@ -9,7 +9,7 @@ public partial class Return
 
     public int OrderId { get; private set; }
 
-    public int InitiatedById { get; private set; }
+    public int AgencyId { get; private set; }
 
     public int? AcceptedById { get; private set; }
 
@@ -25,7 +25,7 @@ public partial class Return
         int? acceptedById, string reason, enReturnStatus status)
     {
         OrderId = orderId;
-        InitiatedById = initiatedById;
+        AgencyId = initiatedById;
         AcceptedById = acceptedById;
         Reason = reason;
         Status = status;
@@ -67,7 +67,7 @@ public partial class Return
 
     public virtual Order Order { get; private set; } = null!;
 
-    public virtual GovernmentEmployee GovernmentEmployee { get; private set; } = null!;
+    public virtual GovernmentAgency Agency { get; private set; } = null!;
 
     public virtual DeliveryAdmin DeliveryAdmin { get; private set; } = null!;
 

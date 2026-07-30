@@ -11,8 +11,6 @@
     <Folder Include="Features\Auth\" />
     <Folder Include="Features\DeliveryAdmins\" />
     <Folder Include="Features\DeliveryProofs\" />
-    <Folder Include="Features\DriverLocationPings\Commands\" />
-    <Folder Include="Features\DriverLocationPings\Queries\" />
     <Folder Include="Features\GeoZones\" />
     <Folder Include="Features\BulkUploadBatch\" />
     <Folder Include="Features\Return\" />

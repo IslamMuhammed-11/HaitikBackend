@@ -53,12 +53,8 @@ public partial class User : BaseEntity
         return DeliveryAdmin.Create(Id);
     }
 
-    public GovernmentEmployee AssignAsGovernmentEmployee(int agencyId)
-    {
-        return GovernmentEmployee.Create(Id, agencyId);
-    }
 
-    public RefreshToken CreateRefreshToken(string tokenHash, DateTime expiry) => RefreshToken.Create(Id, tokenHash, expiry);
+    public RefreshToken CreateRefreshToken(string tokenHash, DateTime expiry) => RefreshToken.Create(Id,null, tokenHash, expiry);
 
     public void UpdateEmail(string email)
     {
@@ -82,8 +78,6 @@ public partial class User : BaseEntity
     public virtual ICollection<DeliveryAdmin> DeliveryAdmins { get; private set; } = new List<DeliveryAdmin>();
 
     public virtual ICollection<Driver> Drivers { get; private set; } = new List<Driver>();
-
-    public virtual ICollection<GovernmentEmployee> GovernmentEmployees { get; private set; } = new List<GovernmentEmployee>();
 
     public virtual RefreshToken? RefreshToken { get; private set; }
 

@@ -2,7 +2,11 @@
 
 public partial class RefreshToken : BaseEntity
 {
-    public int UserId { get; private set; }
+    public int Id { get; private set; }
+
+    public int? UserId { get; private set; }
+
+    public int? AgencyId { get; private set; }
 
     public string TokenHash { get; private set; } = null!;
 
@@ -14,16 +18,18 @@ public partial class RefreshToken : BaseEntity
     {
     }
 
-    private RefreshToken(int userId, string tokenHash, DateTime expiry, DateTime? revokedAt = null)
+    private RefreshToken(int? userId, int? agencyId, string tokenHash, DateTime expiry, DateTime? revokedAt = null)
     {
+        UserId = userId;
+        AgencyId = agencyId;
         TokenHash = tokenHash;
         Expiry = expiry;
         RevokedAt = revokedAt;
     }
 
-    internal static RefreshToken Create(int userId, string tokenHash, DateTime expiry)
+    internal static RefreshToken Create(int? userId, int? agencyId, string tokenHash, DateTime expiry)
     {
-        return new RefreshToken(userId, tokenHash, expiry, null);
+        return new RefreshToken(userId, agencyId, tokenHash, expiry, null);
     }
 
 
@@ -36,5 +42,6 @@ public partial class RefreshToken : BaseEntity
 
     public void RevokeToken() => RevokedAt = DateTime.UtcNow;
 
-    public virtual User User { get; private set; } = null!;
+    public virtual User? User { get; private set; }
+    public virtual GovernmentAgency? Agency { get; private set; }
 }

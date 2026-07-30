@@ -35,7 +35,7 @@ public class GetDriversPageHandler : IRequestHandler<GetDriversPageQuery, Result
 
         List<DriverDetails> page = await query
             .AsNoTracking()
-            .OrderByDescending(e => e.Id)
+            .OrderByDescending(e => e.UserId)
             .ProjectTo<DriverDetails>(_mapper.ConfigurationProvider)
             .Skip(skip)
             .Take(request.PageSize)

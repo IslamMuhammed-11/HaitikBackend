@@ -110,11 +110,11 @@ public partial class HaitikDbContext : DbContext
 
         modelBuilder.Entity<Driver>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Driver__3213E83F240E3EF9");
+            entity.HasKey(e => e.UserId).HasName("PK__Driver__3213E83F240E3EF9");
 
             entity.ToTable("Driver");
 
-            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.UserId).HasColumnName("id");
             entity.Property(e => e.Status).HasMaxLength(20);
 
             entity.HasOne(d => d.GeoZone).WithMany(p => p.Drivers)

@@ -19,11 +19,9 @@ public partial class Order : BaseEntity
 
     public DateTime CreatedAt { get; private set; }
 
-    public GeoLocation PickupLocation { get; private set; } = null!;
+    public GeoLocation DeliveryLocation { get; private set; } = null!;
 
-    public int? GeoZone { get; private set; }
-
-    public int EmployeeId { get; private set; }
+    public int AgencyId { get; private set; }
 
     public byte[] RowVersion { get; private set; } = default!;
 
@@ -31,24 +29,23 @@ public partial class Order : BaseEntity
     {
     }
 
-    private Order(enOrderStatus status, string customerPhoneNumber, int? assignedDriver, DateTime createdAt, GeoLocation pickupLocation, int? geoZone, int employeeId)
+    private Order(enOrderStatus status, string customerPhoneNumber, int? assignedDriver, DateTime createdAt, GeoLocation pickupLocation, int employeeId)
     {
         Status = status;
         CustomerPhoneNumber = customerPhoneNumber;
         AssignedDriver = assignedDriver;
         CreatedAt = createdAt;
-        PickupLocation = pickupLocation;
-        GeoZone = geoZone;
-        EmployeeId = employeeId;
+        DeliveryLocation = pickupLocation;
+        AgencyId = employeeId;
 
     }
 
 
-    public static Order Create(string customerPhoneNumber, DateTime createdAt, GeoLocation pickupLocation, int? geoZone, int agencyId,
+    public static Order Create(string customerPhoneNumber, DateTime createdAt, GeoLocation pickupLocation, int agencyId,
                                                  enOrderStatus status = enOrderStatus.Pending, int? assignedDriver = null)
     {
         return
-            new Order(status, customerPhoneNumber, assignedDriver, createdAt, pickupLocation, geoZone, agencyId);
+            new Order(status, customerPhoneNumber, assignedDriver, createdAt, pickupLocation, agencyId);
 
 
     }
@@ -84,11 +81,9 @@ public partial class Order : BaseEntity
         if (Status != enOrderStatus.Pending)
             return Result.Failed(OrderErrors.CannotUpdateLocation);
 
-        var oldLocation = PickupLocation;
+        var oldLocation = DeliveryLocation;
 
-        PickupLocation = newPickupLocation;
-
-        //UpdateGeoZone()
+        DeliveryLocation = newPickupLocation;
 
         Raise(new OrderLoactionChanged(Id, oldLocation, newPickupLocation));
 
@@ -108,7 +103,7 @@ public partial class Order : BaseEntity
         return Result.Success();
     }
 
-    public virtual GovernmentEmployee GovernmentEmployee { get; private set; } = null!;
+    public virtual GovernmentAgency Agency { get; private set; } = null!;
 
     public virtual Return? Return { get; private set; }
 
@@ -120,7 +115,6 @@ public partial class Order : BaseEntity
 
     public virtual Driver? Driver { get; private set; }
 
-    public virtual GeoZone? GeoZoneNavigation { get; private set; }
 
     public virtual ICollection<OrderStatusHistory> OrderStatusHistories { get; private set; } = new List<OrderStatusHistory>();
 }

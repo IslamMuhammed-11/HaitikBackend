@@ -27,7 +27,7 @@ public class GetDriverDetailsHandler : IRequestHandler<GetDriverDetailsQuery, Re
 
         var driver = await query
             .AsNoTracking()
-            .Where(e => e.Id == request.Id)
+            .Where(e => e.UserId == request.Id)
             .ProjectTo<DriverDetails>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
 
