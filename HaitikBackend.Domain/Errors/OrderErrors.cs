@@ -17,4 +17,6 @@ public static class OrderErrors
     public static Error ConcurrecyConflict => Error.Create("Order.ConcurrencyConflict", "The resource was modified by another user. Please reload and try again.", enErrorTypes.Conflict);
 
     public static Error CustomerPhoneNumberIsNotValid(string phoneNumber) => Error.Create("Order.InvalidCustomerPhoneNumber", $"The provided phone number is not valid: {phoneNumber}", enErrorTypes.Validation);
+
+    public static Error OrderAlreadyHasReturnRequest => Error.Create("Order.AlreadyHaveReturnRequest", $"Order Already Have Return Request", enErrorTypes.Conflict);
 }

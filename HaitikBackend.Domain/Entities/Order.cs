@@ -1,6 +1,7 @@
 ﻿using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Common.Validations;
 using HaitikBackend.Domain.DomainEvents.OrderEvents;
+using HaitikBackend.Domain.DomainEvents.ReturnEvents;
 using HaitikBackend.Domain.Enums;
 using HaitikBackend.Domain.Errors;
 using HaitikBackend.Domain.ValueObjects;
@@ -74,6 +75,21 @@ public partial class Order : BaseEntity
     public OrderDriverAssignment RequestToAssignDriver(int driverId)
     {
         return OrderDriverAssignment.RequestAssign(driverId, Id, DateTime.UtcNow);
+    }
+
+    public Result<Return> RequestToReturn(string reason)
+    {
+        if (this.Return is not null)
+            return Result<Return>.Failed(OrderErrors.OrderAlreadyHasReturnRequest);
+
+        var request = Return.ReturnRequest(Id, AgencyId, reason);
+
+        this.Return = request;
+
+        Raise(new ReturnRequestCreatedEvent(Id, AgencyId, reason));
+
+        return Result<Return>.Success(request);
+
     }
 
     public Result UpdateLocation(GeoLocation newPickupLocation)

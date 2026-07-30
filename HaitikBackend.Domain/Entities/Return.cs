@@ -1,17 +1,16 @@
-﻿using HaitikBackend.Domain.Enums;
+﻿using HaitikBackend.Domain.DomainEvents.ReturnEvents;
+using HaitikBackend.Domain.Enums;
 
 namespace HaitikBackend.Domain.Entities;
 
-public partial class Return
+public partial class Return : BaseEntity
 {
-
-    public int Id { get; private set; }
 
     public int OrderId { get; private set; }
 
     public int AgencyId { get; private set; }
 
-    public int? AcceptedById { get; private set; }
+    public int? ReviewedById { get; private set; }
 
     public string Reason { get; private set; } = null!;
 
@@ -26,15 +25,18 @@ public partial class Return
     {
         OrderId = orderId;
         AgencyId = initiatedById;
-        AcceptedById = acceptedById;
+        ReviewedById = acceptedById;
         Reason = reason;
         Status = status;
     }
 
 
-    public static Return ReturnRequest(int orderId, int initiatedById, string reason)
+    internal static Return ReturnRequest(int orderId, int agencyId, string reason)
     {
-        return new Return(orderId, initiatedById, null,
+
+        
+
+        return new Return(orderId, agencyId, null,
                           reason, enReturnStatus.Pending);
     }
 
@@ -44,32 +46,34 @@ public partial class Return
         if (Status != enReturnStatus.Pending)
             return;
 
-        ChangeStatus(enReturnStatus.Accepted);
+        ChangeStatus(enReturnStatus.Accepted, acceptedBy);
 
-        AcceptedById = acceptedBy;
+
+        Raise(new ReturnRequestAcceptedEvent(OrderId, acceptedBy));
     }
 
 
-    public void RejectReturn()
+    public void RejectReturn(int rejectedBy)
     {
         if (Status != enReturnStatus.Pending)
             return;
 
-        ChangeStatus(enReturnStatus.Rejected);
+        ChangeStatus(enReturnStatus.Rejected, rejectedBy);
 
-        AcceptedById = null;
     }
 
-    private void ChangeStatus(enReturnStatus status)
+    private void ChangeStatus(enReturnStatus status, int userId)
     {
         Status = status;
+
+        ReviewedById = userId;
     }
 
     public virtual Order Order { get; private set; } = null!;
 
     public virtual GovernmentAgency Agency { get; private set; } = null!;
 
-    public virtual DeliveryAdmin DeliveryAdmin { get; private set; } = null!;
+    public virtual User? User { get; private set; }
 
 
 }

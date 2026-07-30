@@ -22,12 +22,7 @@ public class AssignUserAsDriverHandler : IRequestHandler<AssignUserAsDriverComma
         if (user is null)
             return Result<int>.Failed(UserErrors.UserNotFound(request.UserId));
 
-        var geoZoneExists = await _unitOfWork.GeoZones.DoesExist(request.GeoZoneId);
-
-        if (!geoZoneExists)
-            return Result<int>.Failed(DriverErrors.GeoZoneNotFound(request.GeoZoneId));
-
-        var driver = user.AssignAsDriver(request.GeoZoneId, request.MaximumOrderPerDay);
+        var driver = user.AssignAsDriver(request.MaximumOrderPerDay);
 
         _unitOfWork.Drivers.Add(driver);
 

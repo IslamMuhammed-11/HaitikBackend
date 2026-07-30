@@ -1,5 +1,4 @@
-﻿using HaitikBackend.Domain.Common.Results;
-using HaitikBackend.Domain.Enums;
+﻿using HaitikBackend.Domain.Enums;
 
 namespace HaitikBackend.Domain.Entities;
 
@@ -43,18 +42,20 @@ public partial class User : BaseEntity
 
     public string FullName() => FirstName + LastName;
 
-    public Driver AssignAsDriver(int geoZoneId, short? maximumOrdersPerDay, enDriverStatus status = enDriverStatus.Offline)
+    public Driver AssignAsDriver(short? maximumOrdersPerDay, enDriverStatus status = enDriverStatus.Offline)
     {
-        return Driver.Create(Id, maximumOrdersPerDay, geoZoneId, status);
+        //Role = Driver
+
+        return Driver.Create(Id, maximumOrdersPerDay, status);
     }
 
-    public Result<DeliveryAdmin> AssignAsDeliveryAdmin()
+    public void AssignAsDeliveryAdmin()
     {
-        return DeliveryAdmin.Create(Id);
+        // Role = DeliveryAdmin;
     }
 
 
-    public RefreshToken CreateRefreshToken(string tokenHash, DateTime expiry) => RefreshToken.Create(Id,null, tokenHash, expiry);
+    public RefreshToken CreateRefreshToken(string tokenHash, DateTime expiry) => RefreshToken.Create(Id, null, tokenHash, expiry);
 
     public void UpdateEmail(string email)
     {
@@ -75,9 +76,8 @@ public partial class User : BaseEntity
     {
         RoleId = roleId;
     }
-    public virtual ICollection<DeliveryAdmin> DeliveryAdmins { get; private set; } = new List<DeliveryAdmin>();
 
-    public virtual ICollection<Driver> Drivers { get; private set; } = new List<Driver>();
+    public virtual Driver? Driver { get; private set; }
 
     public virtual RefreshToken? RefreshToken { get; private set; }
 

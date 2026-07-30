@@ -3,4 +3,4 @@ using MediatR;
 
 namespace HaitikBackend.Application.Features.Drivers.Commands.AssignUserAsDriver;
 
-public sealed record AssignUserAsDriverCommand(int UserId, short? MaximumOrderPerDay, int GeoZoneId) : IRequest<Result<int>>;
+public sealed record AssignUserAsDriverCommand(int UserId, short? MaximumOrderPerDay) : IRequest<Result<int>>;

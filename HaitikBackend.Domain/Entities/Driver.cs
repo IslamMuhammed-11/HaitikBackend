@@ -19,16 +19,16 @@ public partial class Driver : BaseEntity
 
     }
 
-    private Driver(int userId, enDriverStatus status, short? maximumOrdersPerDay, int geoZoneId)
+    private Driver(int userId, enDriverStatus status, short? maximumOrdersPerDay)
     {
         UserId = userId;
         Status = status;
         MaximumOrdersPerDay = maximumOrdersPerDay;
     }
 
-    internal static Driver Create(int userId, short? maximumOrdersPerDay, int geoZoneId, enDriverStatus status = enDriverStatus.Offline)
+    internal static Driver Create(int userId, short? maximumOrdersPerDay,  enDriverStatus status = enDriverStatus.Offline)
     {
-        return new Driver(userId, status, maximumOrdersPerDay, geoZoneId);
+        return new Driver(userId, status, maximumOrdersPerDay);
 
 
     }

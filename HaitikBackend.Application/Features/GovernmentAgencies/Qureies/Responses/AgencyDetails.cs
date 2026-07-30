@@ -1,3 +1,5 @@
+using HaitikBackend.Domain.ValueObjects;
+
 namespace HaitikBackend.Application.Features.GovernmentAgencies.Qureies.Responses;
 
 public sealed record AgencyDetails
@@ -5,6 +7,8 @@ public sealed record AgencyDetails
     public int Id { get; init; }
 
     public string Name { get; init; } = null!;
+
+    public GeoLocation Location { get; init; } = null!;
 
     public int TotalOrders { get; init; }
 }
