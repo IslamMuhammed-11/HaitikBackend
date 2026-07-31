@@ -19,4 +19,6 @@ public static class OrderErrors
     public static Error CustomerPhoneNumberIsNotValid(string phoneNumber) => Error.Create("Order.InvalidCustomerPhoneNumber", $"The provided phone number is not valid: {phoneNumber}", enErrorTypes.Validation);
 
     public static Error OrderAlreadyHasReturnRequest => Error.Create("Order.AlreadyHaveReturnRequest", $"Order Already Have Return Request", enErrorTypes.Conflict);
+
+    public static Error OrderAlreadyHasDeliveryProof => Error.Create("Order.AlreadyHaveDeliveryProof", $"Order Already Have Delivery Proof", enErrorTypes.Conflict);
 }

@@ -1,6 +1,6 @@
 ﻿using HaitikBackend.Domain.Entities;
 
-namespace HaitikBackend.Application.Interfaces.OTP;
+namespace HaitikBackend.Application.Common.Interfaces.OTP;
 
 public interface IOtpGenerator
 {

@@ -1,18 +1,14 @@
 ﻿namespace HaitikBackend.Domain.Entities;
 
-using HaitikBackend.Domain.Common.Results;
-
 public partial class DeliveryProof : BaseEntity
 {
-    public int Id { get; private set; }
-
     public int OrderId { get; private set; }
 
     public string ImageUrl { get; private set; } = null!;
 
     public string ReciverName { get; private set; } = null!;
 
-    public string DeliveryNotes { get; private set; } = null!;
+    public string? DeliveryNotes { get; private set; } = null!;
 
     public DateTime DeliverdAt { get; private set; }
 
@@ -20,7 +16,7 @@ public partial class DeliveryProof : BaseEntity
     {
     }
 
-    private DeliveryProof(int orderId, string imageUrl, string reciverName, string deliveryNotes, DateTime deliveredAt)
+    private DeliveryProof(int orderId, string imageUrl, string reciverName, string? deliveryNotes, DateTime deliveredAt)
     {
         OrderId = orderId;
         ImageUrl = imageUrl;
@@ -29,11 +25,16 @@ public partial class DeliveryProof : BaseEntity
         DeliverdAt = deliveredAt;
     }
 
-    internal static Result<DeliveryProof> Create(int orderId, string imageUrl, string reciverName, string deliveryNotes, DateTime deliveredAt)
+    internal static DeliveryProof Create(int orderId, string imageUrl, string reciverName, string? deliveryNotes, DateTime deliveredAt)
     {
-        var proof = new DeliveryProof(orderId, imageUrl, reciverName, deliveryNotes, deliveredAt);
+        return new DeliveryProof(orderId, imageUrl, reciverName, deliveryNotes, deliveredAt);
 
-        return Result<DeliveryProof>.Success(proof);
+
+    }
+
+    public void UpdateDeliveryNotes(string? deliveryNotes)
+    {
+        DeliveryNotes = deliveryNotes;
     }
 
     public virtual Order Order { get; private set; } = null!;

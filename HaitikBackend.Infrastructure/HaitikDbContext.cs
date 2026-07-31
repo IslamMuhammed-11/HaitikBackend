@@ -90,11 +90,11 @@ public partial class HaitikDbContext : DbContext
 
         modelBuilder.Entity<DeliveryProof>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Delivery__3213E83F9B382602");
+            entity.HasKey(e => e.OrderId).HasName("PK__Delivery__3213E83F9B382602");
 
             entity.ToTable("DeliveryProof");
 
-            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.OrderId).HasColumnName("id");
             entity.Property(e => e.DeliveryNotes).HasMaxLength(500);
             entity.Property(e => e.ImageUrl)
                 .HasMaxLength(2048)

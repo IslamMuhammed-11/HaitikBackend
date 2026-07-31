@@ -7,14 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Common\" />
     <Folder Include="Features\Auth\" />
-    <Folder Include="Features\DeliveryProofs\Commands\" />
-    <Folder Include="Features\DeliveryProofs\Queries\" />
     <Folder Include="Features\BulkUploadBatch\" />
     <Folder Include="Features\NoitificationLogs\Commands\LogNotification\" />
     <Folder Include="Features\NoitificationLogs\Queries\" />
-    <Folder Include="Features\Orders\Command\BulkUpload\" />
   </ItemGroup>
 
   <ItemGroup>

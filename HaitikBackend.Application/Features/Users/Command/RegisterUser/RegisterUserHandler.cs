@@ -1,5 +1,5 @@
-﻿using HaitikBackend.Application.Interfaces.PhoneNumberChecker;
-using HaitikBackend.Application.Interfaces.Security;
+﻿using HaitikBackend.Application.Common.Interfaces.PhoneNumberChecker;
+using HaitikBackend.Application.Common.Interfaces.Security;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Errors;

@@ -1,4 +1,4 @@
-﻿namespace HaitikBackend.Application.Interfaces.PhoneNumberChecker;
+﻿namespace HaitikBackend.Application.Common.Interfaces.PhoneNumberChecker;
 
 public interface IPhoneNumberChecker
 {

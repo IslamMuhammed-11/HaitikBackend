@@ -1,4 +1,4 @@
-using HaitikBackend.Application.Interfaces.Security;
+using HaitikBackend.Application.Common.Interfaces.Security;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.DomainEvents.OTP;
 using HaitikBackend.Domain.Entities;

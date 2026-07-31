@@ -1,4 +1,4 @@
-﻿namespace HaitikBackend.Application.Interfaces.Security;
+﻿namespace HaitikBackend.Application.Common.Interfaces.Security;
 
 public interface IPasswordHasher
 {

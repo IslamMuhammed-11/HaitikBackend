@@ -92,6 +92,21 @@ public partial class Order : BaseEntity
 
     }
 
+    public Result ProofDelivery(string imageUrl, string reciverName, string? deliveryNotes, DateTime deliveredAt)
+    {
+
+        if (DeliveryProof is not null)
+            return Result.Failed(OrderErrors.OrderAlreadyHasDeliveryProof);
+
+        var proof = DeliveryProof.Create(Id, imageUrl, reciverName, deliveryNotes, deliveredAt);
+
+        DeliveryProof = proof;
+
+        Raise(new DeliveryProofWasUploaded(Id));
+
+        return Result.Success();
+    }
+
     public Result UpdateLocation(GeoLocation newPickupLocation)
     {
         if (Status != enOrderStatus.Pending)
@@ -123,7 +138,7 @@ public partial class Order : BaseEntity
 
     public virtual Return? Return { get; private set; }
 
-    public virtual ICollection<DeliveryProof> DeliveryProofs { get; private set; } = new List<DeliveryProof>();
+    public virtual DeliveryProof? DeliveryProof { get; private set; }
 
     public virtual ICollection<OtpCode> OtpCodes { get; private set; } = new List<OtpCode>();
 
