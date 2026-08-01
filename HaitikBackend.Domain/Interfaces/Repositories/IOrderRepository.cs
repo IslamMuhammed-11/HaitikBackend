@@ -6,6 +6,7 @@ public interface IOrderRepository : IGenericRepository<Order>
 {
     Task<bool> DoesExist(int Id, CancellationToken cancellationToken = default);
 
-    Task<Order> GetOrderAndReturnRequestAsync(int Id, CancellationToken cancellationToken = default);
+    Task<Order?> GetOrderAndReturnRequestAsync(int Id, CancellationToken cancellationToken = default);
 
+    Task<Order?> GetOrderAndAgencyByIdAsync(int Id, CancellationToken cancellationToken = default);
 }

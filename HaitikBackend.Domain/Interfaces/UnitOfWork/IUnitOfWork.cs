@@ -9,7 +9,6 @@ public interface IUnitOfWork
 
     IBulkUploadRejectedRowRepository BulkUploadRejectedRows { get; }
 
-    IDeliveryAdminRepository DeliveryAdmins { get; }
 
     IDeliveryProofRepository DeliveryProofs { get; }
 
@@ -17,11 +16,9 @@ public interface IUnitOfWork
 
     IDriverRepository Drivers { get; }
 
-    IGeoZoneRepository GeoZones { get; }
 
     IGovernmentAgencyRepository Agencies { get; }
 
-    IGovernmentEmployeeRepository Employees { get; }
 
     INotfiactionLogRepository NotfiactionLogs { get; }
 

@@ -1,4 +1,4 @@
-﻿namespace HaitikBackend.Application.Common.FileModels;
+﻿namespace HaitikBackend.Application.Common.Models.FileModels;
 
 public sealed class FileResult
 {

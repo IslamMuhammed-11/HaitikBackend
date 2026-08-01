@@ -1,4 +1,4 @@
-﻿using HaitikBackend.Application.Common.FileModels;
+﻿using HaitikBackend.Application.Common.Models.FileModels;
 using HaitikBackend.Domain.Common.Results;
 using MediatR;
 using System;

@@ -1,8 +1,8 @@
-﻿using HaitikBackend.Application.Common.BulkOrdersModel;
+﻿using HaitikBackend.Application.Common.Models.BulkOrdersModel;
 
 namespace HaitikBackend.Application.Common.Interfaces.Import.Importer;
 
 public interface IDocumentImporter
 {
-    List<BulkOrderModel> Parse(HaitikBackend.Application.Common.FileModels.FileUpload file);
+    List<BulkOrderModel> Parse(Models.FileModels.FileUpload file);
 }
