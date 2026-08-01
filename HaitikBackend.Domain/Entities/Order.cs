@@ -102,7 +102,7 @@ public partial class Order : BaseEntity
 
         DeliveryProof = proof;
 
-        Raise(new DeliveryProofWasUploaded(Id));
+        Raise(new DeliveryProofWasUploadedEvent(Id));
 
         return Result.Success();
     }

@@ -2,7 +2,7 @@ using AutoMapper;
 using HaitikBackend.Application.Features.Drivers.Queries.Responses;
 using HaitikBackend.Domain.Entities;
 
-namespace HaitikBackend.Application.Mapping;
+namespace HaitikBackend.Application.Features.Drivers;
 
 public class DriverProfile : Profile
 {

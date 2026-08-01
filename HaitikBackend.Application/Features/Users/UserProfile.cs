@@ -3,7 +3,7 @@ using HaitikBackend.Application.Features.Users.Queries.GetUserDetails;
 using HaitikBackend.Application.Features.Users.Queries.GetUsersPage;
 using HaitikBackend.Domain.Entities;
 
-namespace HaitikBackend.Application.Mapping;
+namespace HaitikBackend.Application.Features.Users;
 
 public class UserProfile : Profile
 {

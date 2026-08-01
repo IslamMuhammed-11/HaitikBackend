@@ -17,9 +17,7 @@ public sealed record OrderDetails
 
     public GeoLocation PickupLocation { get; init; } = null!;
 
-    public int EmployeeId { get; init; }
-
-    public string EmployeeName { get; init; } = null!;
+    public int AgencyId { get; init; }
 
     public string AgencyName { get; init; } = null!;
 }

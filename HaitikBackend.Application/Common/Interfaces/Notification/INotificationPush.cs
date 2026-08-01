@@ -2,5 +2,5 @@
 
 public interface INotificationPush
 {
-    Task<bool> SendNoificationAsync(string title, string body, /*string token,*/ CancellationToken ct);
+    Task<bool> SendNoificationAsync(int driverId, string title, string body, string token, CancellationToken ct);
 }

@@ -2,7 +2,7 @@
 using HaitikBackend.Application.Features.Return.Queries.Responses;
 using HaitikBackend.Domain.Entities;
 
-namespace HaitikBackend.Application.Mapping;
+namespace HaitikBackend.Application.Features.Return;
 
 public class ReturnProfile : Profile
 {

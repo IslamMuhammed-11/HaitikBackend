@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using HaitikBackend.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace HaitikBackend.Infrastructure;
+namespace HaitikBackend.Infrastructure.Presistence;
 
 public partial class HaitikDbContext : DbContext
 {

@@ -26,8 +26,6 @@ public class GetDriversPageHandler : IRequestHandler<GetDriversPageQuery, Result
         if (request.Status is not null)
             query = query.Where(e => e.Status == request.Status);
 
-        if (request.GeoZoneId is not null)
-            query = query.Where(e => e.GeoZoneId == request.GeoZoneId.Value);
 
         int skip = (request.PageNumber - 1) * request.PageSize;
 

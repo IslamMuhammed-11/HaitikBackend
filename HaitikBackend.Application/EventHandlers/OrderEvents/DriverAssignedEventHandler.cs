@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace HaitikBackend.Application.EventHandlers.OrderEvents
+namespace HaitikBackend.Application.EventHandlers.OrderEvents;
+
+internal class DriverAssignedEventHandler
 {
-    internal class DriverAssignedEventHandler
-    {
-    }
 }

@@ -37,7 +37,7 @@ public class AcceptAssignmentHandler : IRequestHandler<AcceptAssignmentCommand, 
     private async Task<Result> Execute(Order order, HaitikBackend.Domain.Entities.OrderDriverAssignment assignment, CancellationToken cancellationToken)
     {
         try
-        {
+        { 
             var result = order.AssignDriver(assignment.DriverId);
 
             if (!result.IsSuccess)

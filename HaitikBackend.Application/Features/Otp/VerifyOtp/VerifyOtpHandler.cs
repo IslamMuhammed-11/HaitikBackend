@@ -15,7 +15,8 @@ public class VerifyOtpHandler : IRequestHandler<VerifyOtpCommand, Result>
     private readonly IUnitOfWork _unitOfWork;
 
 
-    public VerifyOtpHandler( IPasswordHasher passwordHasher, IUnitOfWork unitOfWork)
+
+    public VerifyOtpHandler(IPasswordHasher passwordHasher, IUnitOfWork unitOfWork)
     {
 
         _passwordHasher = passwordHasher;
@@ -40,11 +41,29 @@ public class VerifyOtpHandler : IRequestHandler<VerifyOtpCommand, Result>
             return await HandleFailedAttempts(otpEntity, cancellationToken);
 
 
+        var orderResult = await SetOrderAsDelivered(request.OrderId);
+
+        if(orderResult.IsSuccess is false)
+            return orderResult;
+
         otpEntity.Raise(new OtpVerifiedEvent(otpEntity.OrderId, otpEntity.Id));
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
+    }
+
+    private async Task<Result> SetOrderAsDelivered(int orderId)
+    {
+        var order = await _unitOfWork.Orders.GetByIdAsync(orderId, default);
+
+        if (order is null)
+            return Result.Failed(OrderErrors.OrderNotFound(orderId));
+
+        order.SetStatusAsDelivered();
+
+        return Result.Success();
+
     }
 
     private Result ValidateOTPEntity(OtpCode otp)

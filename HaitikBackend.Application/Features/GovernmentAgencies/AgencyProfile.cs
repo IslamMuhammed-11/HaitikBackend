@@ -2,7 +2,7 @@
 using HaitikBackend.Application.Features.GovernmentAgencies.Qureies.Responses;
 using HaitikBackend.Domain.Entities;
 
-namespace HaitikBackend.Application.Mapping;
+namespace HaitikBackend.Application.Features.GovernmentAgencies;
 
 public class AgencyProfile : Profile
 {

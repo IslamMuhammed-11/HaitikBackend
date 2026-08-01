@@ -27,8 +27,7 @@ public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<int>>
             return Result<int>.Failed(validatorResult.Error!);
 
 
-        //Will Later Calculate the GeoZone when Handeled.
-        var order = Order.Create(request.CustomerPhoneNumber, DateTime.UtcNow, request.PickupLocation, null, request.employeeId);
+        var order = Order.Create(request.CustomerPhoneNumber, DateTime.UtcNow, request.PickupLocation, request.agencyId);
 
         _unitOfWork.Orders.Add(order);
 
@@ -42,11 +41,10 @@ public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<int>>
 
     private async Task<Result> ValidateRequest(PlaceOrderCommand request, CancellationToken cancellationToken)
     {
-        bool employeeExists = await _unitOfWork.Employees.DoesExistByIdAsync(request.employeeId);
+        bool agencyExists = await _unitOfWork.Agencies.DoesExistAsync(request.agencyId);
 
-        if (!employeeExists)
-            return Result.Failed(GovernmentEmployeeErrors.EmployeeNotFound(request.employeeId));
-
+        if (!agencyExists)
+            return Result.Failed(GovernmentAgencyErrors.AgencyNotFound(request.agencyId));
 
         bool isNumberValid = _phoneNumberChecker.CheckPhoneNumber(request.CustomerPhoneNumber);
 
