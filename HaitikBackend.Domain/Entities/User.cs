@@ -79,7 +79,9 @@ public partial class User : BaseEntity
 
     public virtual Driver? Driver { get; private set; }
 
-    public virtual RefreshToken? RefreshToken { get; private set; }
+    public virtual ICollection<Return> Returns { get; private set; } = new List<Return>();
+
+    public virtual ICollection<RefreshToken> RefreshTokens { get; private set; } = new List<RefreshToken>();    
 
     public virtual Role Role { get; private set; } = null!;
 }

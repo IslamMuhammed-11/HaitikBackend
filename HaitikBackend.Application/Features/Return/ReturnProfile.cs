@@ -8,7 +8,7 @@ public class ReturnProfile : Profile
 {
     public ReturnProfile()
     {
-        CreateMap<Return, ReturnRequest>()
+        CreateMap<HaitikBackend.Domain.Entities.Return, ReturnRequest>()
             .ForMember(dest => dest.AgencyName, opt => opt.MapFrom(e => e.Agency.Name))
             .ForMember(dest => dest.ReviewdByName, opt => opt.MapFrom(e => e.User != null ? e.User.FirstName + " " + e.User.LastName : null));
     }
