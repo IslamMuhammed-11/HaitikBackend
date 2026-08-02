@@ -1,4 +1,5 @@
-﻿using HaitikBackend.Domain.DomainEvents.OrderDriverAssignment;
+﻿using HaitikBackend.Application.Common.Interfaces.BackgroundJobs;
+using HaitikBackend.Domain.DomainEvents.OrderDriverAssignment;
 using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 
@@ -8,13 +9,17 @@ public class AutoAssignmentHandler : IRequestHandler<AutoAssignmentCommand>
 {
     //for now
     private readonly TimeSpan AcceptanceWindow = TimeSpan.FromMinutes(3);
+    private readonly double Meters = 15000;
+
 
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPublisher _publisher;
-    public AutoAssignmentHandler(IUnitOfWork unitOfWork, IPublisher publisher)
+    private readonly IBackgroundJobs _backgroundJobs;
+    public AutoAssignmentHandler(IUnitOfWork unitOfWork, IPublisher publisher, IBackgroundJobs backgroundJobs)
     {
         _unitOfWork = unitOfWork;
         _publisher = publisher;
+        _backgroundJobs = backgroundJobs;
     }
 
     public async Task Handle(AutoAssignmentCommand request, CancellationToken cancellationToken)
@@ -22,10 +27,10 @@ public class AutoAssignmentHandler : IRequestHandler<AutoAssignmentCommand>
 
         var order = await _unitOfWork.Orders.GetOrderAndAgencyByIdAsync(request.orderId, cancellationToken);
 
-        var drivers = await _unitOfWork.Drivers.GetDriversNearPickupLocation(order!.Agency!.Location, cancellationToken);
+        var drivers = await _unitOfWork.Drivers.GetDriversNearPickupLocation(order!.Agency.Location, Meters, cancellationToken);
 
-        //if (drivers.ToArray().Length == 0) 
-        // Trigger Delyed background job to look again
+        //if (drivers.ToArray().Length == 0)
+        //    _backgroundJobs.EnqueueAutoAssignment()
 
 
 

@@ -5,5 +5,5 @@ namespace HaitikBackend.Domain.Interfaces.Repositories;
 
 public interface IOtpCodeRepository : IGenericRepository<OtpCode>
 {
-    Task<OtpCode> GetByOrderIdAsync(int orderId , enOtpPurpose purpose , CancellationToken cancellationToken);
+    Task<OtpCode?> GetByOrderIdAsync(int orderId , enOtpPurpose purpose , CancellationToken cancellationToken);
 }
