@@ -92,6 +92,12 @@ public partial class Order : BaseEntity
 
     }
 
+    public void ExpirePendingAssignments()
+    {
+        foreach (var assignment in OrderDriverAssignments.Where(e => e.Status == enOrderDriverAssignmentStatus.Pending))
+            assignment.MarkAsExpired();
+    }
+
     public Result ProofDelivery(string imageUrl, string reciverName, string? deliveryNotes, DateTime deliveredAt)
     {
 

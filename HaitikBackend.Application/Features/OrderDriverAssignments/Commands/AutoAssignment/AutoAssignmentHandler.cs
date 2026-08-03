@@ -1,9 +1,9 @@
-﻿using HaitikBackend.Application.Common.Interfaces.BackgroundJobs;
-using HaitikBackend.Application.Common.Interfaces.Notification;
+﻿using HaitikBackend.Application.Common.Interfaces;
+using HaitikBackend.Application.Common.Interfaces.BackgroundJobs;
 using HaitikBackend.Application.Common.Models.OfferNotificationModel;
 using HaitikBackend.Domain.DomainEvents.OrderDriverAssignment;
-using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Interfaces.UnitOfWork;
+using HaitikBackend.Domain.Models.Driver;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -19,15 +19,15 @@ public class AutoAssignmentHandler : IRequestHandler<AutoAssignmentCommand>
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPublisher _publisher;
     private readonly ILogger<AutoAssignmentHandler> _logger;
-    private readonly INotificationPush _notificationPush;
     private readonly IBackgroundJobs _backgroundJobs;
+    private readonly INotificationService _notificationService;
     public AutoAssignmentHandler(IUnitOfWork unitOfWork, IPublisher publisher, IBackgroundJobs backgroundJobs,
-                                    INotificationPush notificationPush, ILogger<AutoAssignmentHandler> logger)
+                                   INotificationService notificationService, ILogger<AutoAssignmentHandler> logger)
     {
         _unitOfWork = unitOfWork;
         _publisher = publisher;
         _backgroundJobs = backgroundJobs;
-        _notificationPush = notificationPush;
+        _notificationService = notificationService;
         _logger = logger;
     }
 
@@ -43,47 +43,20 @@ public class AutoAssignmentHandler : IRequestHandler<AutoAssignmentCommand>
 
 
 
-        var assignments = drivers.Select(e => order.RequestToAssignDriver(e.UserId)).ToList();
+        var assignments = drivers.Select(e => order.RequestToAssignDriver(e.Driver.UserId)).ToList();
 
 
         await _unitOfWork.OrderDriverAssignments.AddRangeAsync(assignments, cancellationToken);
 
-        var save = _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var sendOffers = SendOffersToDrivers(drivers, order.Id, AcceptanceWindow, cancellationToken);
+        var sendOffers = drivers.Select(d => _notificationService.SendOrderOfferNotificationAsync(d.Driver, request.orderId, AcceptanceWindow, cancellationToken));
 
-        await Task.WhenAll(save, sendOffers);
+        await Task.WhenAll(sendOffers);
 
-        await _publisher.Publish(new OrderOfferedToDriversEvent(order.Id, assignments.Select(e => e.DriverId).ToList(), AcceptanceWindow), cancellationToken);
+        await _publisher.Publish(new OrderOfferedToDriversEvent(order.Id, drivers, AcceptanceWindow), cancellationToken);
 
     }
-
-    internal async Task SendOffersToDrivers(ICollection<Driver> drivers, int orderId, TimeSpan acceptanceWindow, CancellationToken cancellationToken)
-    {
-        await Parallel.ForEachAsync(drivers,
-           new ParallelOptions
-           {
-               MaxDegreeOfParallelism = 20
-           },
-           async (driver, cancellationToken) =>
-           {
-
-               try
-               {
-                   var model = new OfferNotificationModel(driver.UserId, orderId, acceptanceWindow);
-
-                   await _notificationPush.SendOrderOfferNotification(model, cancellationToken);
-               }
-               catch (Exception ex)
-               {
-
-                   _logger.LogError(ex, "Error sending offer notification to driver {DriverId} for order {OrderId}", driver.UserId, orderId);
-               }
-
-
-           });
-    }
-
 
 
 }

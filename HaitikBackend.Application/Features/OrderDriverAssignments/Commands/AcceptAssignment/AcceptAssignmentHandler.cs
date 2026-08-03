@@ -1,19 +1,20 @@
+using HaitikBackend.Application.Common.Interfaces.OrderAssignment;
 using HaitikBackend.Domain.Common.Results;
-using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Errors;
 using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace HaitikBackend.Application.Features.OrderDriverAssignment.Commands.AcceptAssignment;
 
 public class AcceptAssignmentHandler : IRequestHandler<AcceptAssignmentCommand, Result>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IOrderAssignmentService _orderAssignmentService;
 
-    public AcceptAssignmentHandler(IUnitOfWork unitOfWork)
+    public AcceptAssignmentHandler(IUnitOfWork unitOfWork, IOrderAssignmentService orderAssignmentService)
     {
         _unitOfWork = unitOfWork;
+        _orderAssignmentService = orderAssignmentService;
     }
 
     public async Task<Result> Handle(AcceptAssignmentCommand request, CancellationToken cancellationToken)
@@ -28,32 +29,15 @@ public class AcceptAssignmentHandler : IRequestHandler<AcceptAssignmentCommand, 
         if (order is null)
             return Result.Failed(OrderErrors.OrderNotFound(request.OrderId));
 
-        return await Execute(order, assignment, cancellationToken);
+        var acceptResult = await _orderAssignmentService.AcceptOrderAssignment(order, assignment, cancellationToken);
+
+        if (!acceptResult.IsSuccess)
+            return acceptResult;
+
+        await _unitOfWork.SaveChangesAsync();
+
+        return Result.Success();
 
     }
 
-
-
-    private async Task<Result> Execute(Order order, HaitikBackend.Domain.Entities.OrderDriverAssignment assignment, CancellationToken cancellationToken)
-    {
-        try
-        { 
-            var result = order.AssignDriver(assignment.DriverId);
-
-            if (!result.IsSuccess)
-                return result;
-
-            assignment.MarkAsAccepted();
-
-            await _unitOfWork.SaveChangesAsync();
-
-            return Result.Success();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            return Result.Failed(OrderErrors.ConcurrecyConflict);
-        }
-
-
-    }
 }

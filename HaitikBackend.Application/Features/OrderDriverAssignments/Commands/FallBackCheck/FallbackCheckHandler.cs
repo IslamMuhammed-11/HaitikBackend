@@ -1,17 +1,20 @@
-﻿using HaitikBackend.Domain.Enums;
+﻿using HaitikBackend.Application.Common.Interfaces.OrderAssignment;
 using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace HaitikBackend.Application.Features.OrderDriverAssignments.Commands.FallBackCheck;
 
 public class FallbackCheckHandler : IRequestHandler<FallbackCheckCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
-
-    public FallbackCheckHandler(IUnitOfWork unitOfWork)
+    private readonly IOrderAssignmentService _orderAssignmentService;
+    private readonly ILogger<FallbackCheckHandler> _logger;
+    public FallbackCheckHandler(IUnitOfWork unitOfWork, IOrderAssignmentService orderAssignmentService, ILogger<FallbackCheckHandler> logger)
     {
         _unitOfWork = unitOfWork;
+        _orderAssignmentService = orderAssignmentService;
+        _logger = logger;
     }
 
     public async Task Handle(FallbackCheckCommand request, CancellationToken cancellationToken)
@@ -20,66 +23,41 @@ public class FallbackCheckHandler : IRequestHandler<FallbackCheckCommand>
 
         if (order is null)
             return;
-
         // if already assigned, nothing to do
         if (order.AssignedDriver is not null)
         {
-            var assignments = order.OrderDriverAssignments.Where(a => a.Status == enOrderDriverAssignmentStatus.Pending);
 
-            await ExpirePendingAssignment(assignments, cancellationToken);
+            order.ExpirePendingAssignments();
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return;
         }
 
-        var recomndedDriver = request.drivers.Where(e => e.orders)
+        var recommendedDriver = request.drivers.MinBy(d => d.ActiveOrdersCount);
 
-        var chosen = scored
-            .OrderBy(s => s.distance)
-            .ThenBy(s => s.activeOrders)
-            .FirstOrDefault();
-
-        if (chosen.userId == 0)
+        if (recommendedDriver is null)
         {
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            _logger.LogWarning("No Driver Was Sent to the FallbackCheckHandler");
             return;
         }
 
-        // force assign
-        var assignment = order.RequestToAssignDriver(chosen.userId);
-        _unitOfWork.OrderDriverAssignments.Add(assignment);
+        var assignresult = await _orderAssignmentService.AcceptOrderAssignment
+                                                        (order, order.OrderDriverAssignments.First(a => a.DriverId == recommendedDriver.Driver.UserId), cancellationToken);
 
-        // assign driver to order
-        order.AssignDriver(chosen.userId);
+        if (!assignresult.IsSuccess)
+        {
+            _logger.LogInformation("Assignment was handled");
+            return;
+        }
+
+        order.ExpirePendingAssignments();
+
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
 
-    private async Task<int> GetActiveOrdersCountForDriver(int driverId, CancellationToken cancellationToken)
-    {
-        return await _unitOfWork.Orders.Query()
-            .Where(o => o.AssignedDriver == driverId && o.Status != enOrderStatus.Delivered)
-            .CountAsync(cancellationToken);
-    }
 
-
-
-
-    private async Task ExpirePendingAssignment(IEnumerable<Domain.Entities.OrderDriverAssignment> pendingAssignments, CancellationToken cancellationToken)
-    {
-        Parallel.ForEach(pendingAssignments, pa =>
-        {
-            new ParallelOptions
-            {
-                MaxDegreeOfParallelism = 20
-            };
-
-
-            pa.MarkAsExpired();
-            _unitOfWork.OrderDriverAssignments.Update(pa);
-        });
-    }
 
 }
