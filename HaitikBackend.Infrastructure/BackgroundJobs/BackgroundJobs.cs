@@ -1,7 +1,8 @@
 ﻿using HaitikBackend.Application.Common.Interfaces.BackgroundJobs;
 using HaitikBackend.Application.Features.OrderDriverAssignments.Commands.AutoAssignment;
-using HaitikBackend.Domain.Entities;
+using HaitikBackend.Application.Features.OrderDriverAssignments.Commands.FallBackCheck;
 using HaitikBackend.Domain.Enums;
+using HaitikBackend.Domain.Models.Driver;
 using Hangfire;
 using MediatR;
 
@@ -35,8 +36,9 @@ public class BackgroundJobs : IBackgroundJobs
         throw new NotImplementedException();
     }
 
-    public Task ScheduleFallbackCheck(int orderId, TimeSpan Delay)
+    public Task ScheduleFallbackCheck(int orderId, ICollection<DriverWithActiveOrdersCount> drivers, TimeSpan Delay)
     {
-        throw new NotImplementedException();
+        BackgroundJob.Schedule<IMediator>(e => e.Send(new FallbackCheckCommand(orderId, drivers)), Delay);
+        return Task.CompletedTask;
     }
 }

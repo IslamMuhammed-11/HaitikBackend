@@ -7,17 +7,17 @@ namespace HaitikBackend.Application.EventHandlers.OrderAssignmentsEvents;
 public class OrderOfferedToDriversEventHandler : INotificationHandler<OrderOfferedToDriversEvent>
 {
 
-    private readonly IBackgroundJobs _assignmentSchedular;
+    private readonly IBackgroundJobs _backgroundJobs;
 
-    public OrderOfferedToDriversEventHandler(IBackgroundJobs assignmentSchedular)
+    public OrderOfferedToDriversEventHandler(IBackgroundJobs backgroundJobs)
     {
-        _assignmentSchedular = assignmentSchedular;
+        _backgroundJobs = backgroundJobs;
     }
 
     public Task Handle(OrderOfferedToDriversEvent notification, CancellationToken cancellationToken)
     {
 
-        return _assignmentSchedular.ScheduleFallbackCheck(notification.orderId, notification.acceptanceWindow);
-        
+        return _backgroundJobs.ScheduleFallbackCheck(notification.orderId, notification.drivers, notification.acceptanceWindow);
+
     }
 }
