@@ -8,5 +8,7 @@ public interface IOrderRepository : IGenericRepository<Order>
 
     Task<Order?> GetOrderAndReturnRequestAsync(int Id, CancellationToken cancellationToken = default);
 
+    Task<Order?> GetByIdWithAssignmentsAsync(int Id, CancellationToken ct = default);
+
     Task<Order?> GetOrderAndAgencyByIdAsync(int Id, CancellationToken cancellationToken = default);
 }

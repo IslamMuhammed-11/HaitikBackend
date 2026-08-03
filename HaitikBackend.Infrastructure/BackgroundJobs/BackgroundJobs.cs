@@ -1,5 +1,6 @@
 ﻿using HaitikBackend.Application.Common.Interfaces.BackgroundJobs;
 using HaitikBackend.Application.Features.OrderDriverAssignments.Commands.AutoAssignment;
+using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Enums;
 using Hangfire;
 using MediatR;
@@ -25,7 +26,8 @@ public class BackgroundJobs : IBackgroundJobs
 
     public Task EnqueueOrderStatusNotification(int orderId, enOrderStatus currentStatus, DateTime updatedAt)
     {
-        
+        throw new NotImplementedException();
+
     }
 
     public Task EnqueueSendOrderDeliveryOtp(int ordrId)

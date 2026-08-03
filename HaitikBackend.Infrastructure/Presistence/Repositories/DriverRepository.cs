@@ -1,5 +1,7 @@
+
 using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Interfaces.Repositories;
+using HaitikBackend.Domain.Models.Driver;
 using HaitikBackend.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 namespace HaitikBackend.Infrastructure.Presistence.Repositories;
@@ -22,7 +24,7 @@ internal class DriverRepository : GenericRepository<Driver>, IDriverRepository
             .FirstOrDefaultAsync(d => d.UserId == Id, ct);
     }
 
-    public async Task<ICollection<Driver>> GetDriversNearPickupLocation(GeoLocation PickupLocatiom, double Radius, CancellationToken ct = default)
+    public async Task<ICollection<DriverWithActiveOrdersCount>> GetDriversNearPickupLocation(GeoLocation PickupLocatiom, double Radius, CancellationToken ct = default)
     {
         return await _context.Drivers
             .AsNoTracking()
@@ -30,11 +32,13 @@ internal class DriverRepository : GenericRepository<Driver>, IDriverRepository
             .Select(d => new
             {
                 driver = d,
-                distance = d.DriverLocationPing!.Location.CurrentLocation.Distance(PickupLocatiom.CurrentLocation)
+                distance = d.DriverLocationPing!.Location.CurrentLocation.Distance(PickupLocatiom.CurrentLocation),
+                activeOrdersCount = d.Orders.Count(o => o.Status != Domain.Enums.enOrderStatus.Delivered)
             })
             .Where(d => d.distance <= Radius)
             .OrderBy(d => d.distance)
-            .Select(d => d.driver)
+            .ThenBy(d => d.activeOrdersCount)
+            .Select(x => new DriverWithActiveOrdersCount(x.driver, x.activeOrdersCount))
             .ToListAsync(ct);
     }
 }
