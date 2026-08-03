@@ -22,9 +22,9 @@ internal class OrderRepository : GenericRepository<Order>, IOrderRepository
             .FirstOrDefaultAsync(o => o.Id == Id, cancellationToken);
     }
 
-    Task<Order?> GetByIdWithAssignmentsAsync(int Id, CancellationToken ct = default)
+    public async Task<Order?> GetByIdWithAssignmentsAsync(int Id, CancellationToken ct = default)
     {
-        return _dbSet.Include(o => o.OrderDriverAssignments)
+        return await _dbSet.Include(o => o.OrderDriverAssignments)
             .FirstOrDefaultAsync(o => o.Id == Id, ct);
     }
 
@@ -34,4 +34,6 @@ internal class OrderRepository : GenericRepository<Order>, IOrderRepository
             .Include(o => o.Agency)
             .FirstOrDefaultAsync(o => o.Id == Id, cancellationToken);
     }
+
+
 }
