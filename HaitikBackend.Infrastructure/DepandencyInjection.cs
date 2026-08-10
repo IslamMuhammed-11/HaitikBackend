@@ -1,5 +1,6 @@
 using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using HaitikBackend.Infrastructure.Presistence;
+using HaitikBackend.Infrastructure.Presistence.UnitOfWork;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
