@@ -1,4 +1,5 @@
-﻿using HaitikBackend.Infrastructure.Presistence;
+using HaitikBackend.Domain.Interfaces.UnitOfWork;
+using HaitikBackend.Infrastructure.Presistence;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,8 @@ public static class DepandencyInjection
     {
 
         services.AddDbContext<HaitikDbContext>(options => options.UseSqlServer(opt => opt.UseNetTopologySuite()));
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddHangfire(config => config
         .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
