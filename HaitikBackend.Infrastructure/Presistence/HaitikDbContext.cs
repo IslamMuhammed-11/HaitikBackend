@@ -1,17 +1,24 @@
 ﻿using HaitikBackend.Domain.Entities;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace HaitikBackend.Infrastructure.Presistence;
 
 public partial class HaitikDbContext : DbContext
 {
-    public HaitikDbContext()
+
+
+    private readonly IPublisher _publisher;
+
+    public HaitikDbContext(IPublisher publisher)
     {
+        _publisher = publisher;
     }
 
-    public HaitikDbContext(DbContextOptions<HaitikDbContext> options)
+    public HaitikDbContext(DbContextOptions<HaitikDbContext> options, IPublisher publisher)
         : base(options)
     {
+        _publisher = publisher;
     }
 
     public virtual DbSet<BulkUploadBatch> BulkUploadBatches { get; set; }
@@ -36,7 +43,7 @@ public partial class HaitikDbContext : DbContext
 
     public virtual DbSet<Return> Returns { get; set; }
 
-    public virtual DbSet<SystemSetting> SystemSettings { get; set; }
+    //public virtual DbSet<SystemSetting> SystemSettings { get; set; }
 
     public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
 
@@ -60,6 +67,42 @@ public partial class HaitikDbContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
+
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+
+        var entires = ChangeTracker
+
+            .Entries<BaseEntity>()
+
+            .Where(e => e.Entity.DomainEvents.Count > 0)
+
+            .ToList();
+
+
+        var domainEvents = entires.SelectMany(e => e.Entity.DomainEvents).ToList();
+
+        var result =
+            await base.SaveChangesAsync(cancellationToken);
+
+        foreach (var entry in entires)
+        {
+            entry.Entity.ClearDomainEvents();
+        }
+
+        foreach (var domainEvent in domainEvents)
+        {
+            await _publisher.Publish(
+                domainEvent,
+                cancellationToken);
+        }
+
+
+        return result;
+    }
+
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

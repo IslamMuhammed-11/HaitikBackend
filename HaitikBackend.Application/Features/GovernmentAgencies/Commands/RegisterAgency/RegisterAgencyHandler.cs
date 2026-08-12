@@ -3,6 +3,7 @@ using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Errors;
 using HaitikBackend.Domain.Interfaces.UnitOfWork;
+using HaitikBackend.Domain.ValueObjects;
 using MediatR;
 
 namespace HaitikBackend.Application.Features.GovernmentAgencies.Commands.AddAgency;
@@ -27,7 +28,10 @@ public class RegisterAgencyHandler : IRequestHandler<RegisterAgencyCommand, Resu
 
         var hashedPassword = _passwordHasher.HashPassword(request.Password);
 
-        var agency = GovernmentAgency.Create(request.Name, request.Location, request.Username, hashedPassword);
+
+        var location = GeoLocation.Create(request.Latitude, request.Longitude);
+
+        var agency = GovernmentAgency.Create(request.Name, location, request.Username, hashedPassword);
 
         _unitOfWork.Agencies.Add(agency);
 

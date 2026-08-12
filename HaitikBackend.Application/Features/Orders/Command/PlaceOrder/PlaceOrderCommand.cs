@@ -8,5 +8,5 @@ using System.Text;
 
 namespace HaitikBackend.Application.Features.Orders.Command.PlaceOrder;
 
-public sealed record PlaceOrderCommand(string CustomerPhoneNumber , GeoLocation PickupLocation , int agencyId) : IRequest<Result<int>>;
+public sealed record PlaceOrderCommand(string CustomerPhoneNumber , double Longitude , double Latitude , int AgencyId) : IRequest<Result<int>>;
 

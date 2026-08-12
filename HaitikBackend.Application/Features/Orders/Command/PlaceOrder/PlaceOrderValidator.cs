@@ -8,7 +8,7 @@ public class PlaceOrderValidator : AbstractValidator<PlaceOrderCommand>
     public PlaceOrderValidator()
     {
         RuleFor(e => e.CustomerPhoneNumber).PhoneNumberMaximumLength().NotEmpty().NotNull();
-        RuleFor(e => e.PickupLocation).NotNull().NotEmpty();
-        RuleFor(e => e.agencyId).NotNull().GreaterThan(0);
+        //RuleFor(e => e.PickupLocation).NotNull().NotEmpty();
+        RuleFor(e => e.AgencyId).NotNull().GreaterThan(0);
     }
 }

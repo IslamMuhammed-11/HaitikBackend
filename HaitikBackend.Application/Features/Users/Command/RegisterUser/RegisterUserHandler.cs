@@ -32,7 +32,7 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Result<i
 
         string hashedPassword = _passwordHasher.HashPassword(request.Password);
 
-        bool isPhoneNumberValid = _phoneNumberChecker.CheckPhoneNumber(hashedPassword);
+        bool isPhoneNumberValid = _phoneNumberChecker.CheckPhoneNumber(request.PhoneNumber);
 
         if (!isPhoneNumberValid)
             return Result<int>.Failed(UserErrors.InvalidPhoneNumber);

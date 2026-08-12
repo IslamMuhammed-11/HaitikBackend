@@ -4,6 +4,7 @@ using HaitikBackend.Domain.DomainEvents.OrderEvents;
 using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Errors;
 using HaitikBackend.Domain.Interfaces.UnitOfWork;
+using HaitikBackend.Domain.ValueObjects;
 using MediatR;
 
 namespace HaitikBackend.Application.Features.Orders.Command.PlaceOrder;
@@ -26,8 +27,10 @@ public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<int>>
         if (!validatorResult.IsSuccess)
             return Result<int>.Failed(validatorResult.Error!);
 
+        var pickupLocation = GeoLocation.Create(request.Latitude, request.Longitude);
 
-        var order = Order.Create(request.CustomerPhoneNumber, DateTime.UtcNow, request.PickupLocation, request.agencyId);
+
+        var order = Order.Create(request.CustomerPhoneNumber, DateTime.UtcNow, pickupLocation, request.AgencyId);
 
         _unitOfWork.Orders.Add(order);
 
@@ -41,10 +44,10 @@ public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<int>>
 
     private async Task<Result> ValidateRequest(PlaceOrderCommand request, CancellationToken cancellationToken)
     {
-        bool agencyExists = await _unitOfWork.Agencies.DoesExistAsync(request.agencyId);
+        bool agencyExists = await _unitOfWork.Agencies.DoesExistAsync(request.AgencyId);
 
         if (!agencyExists)
-            return Result.Failed(GovernmentAgencyErrors.AgencyNotFound(request.agencyId));
+            return Result.Failed(GovernmentAgencyErrors.AgencyNotFound(request.AgencyId));
 
         bool isNumberValid = _phoneNumberChecker.CheckPhoneNumber(request.CustomerPhoneNumber);
 

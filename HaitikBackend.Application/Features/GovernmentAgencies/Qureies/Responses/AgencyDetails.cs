@@ -8,7 +8,9 @@ public sealed record AgencyDetails
 
     public string Name { get; init; } = null!;
 
-    public GeoLocation Location { get; init; } = null!;
+    public double longitude { get; init; }
+
+    public double latitude { get; init; }
 
     public int TotalOrders { get; init; }
 }

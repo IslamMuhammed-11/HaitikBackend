@@ -2,7 +2,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using HaitikBackend.Application.Features.Orders.Queries.Responses;
 using HaitikBackend.Domain.Common.Results;
-using HaitikBackend.Domain.Interfaces.Repositories;
+using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,12 +10,12 @@ namespace HaitikBackend.Application.Features.Orders.Queries.GetAgencyOrdersPage;
 
 public class GetAgencyOrdersPageHandler : IRequestHandler<GetAgencyOrdersPageQuery, Result<OrdersPageResponse>>
 {
-    private readonly IOrderRepository _orderRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public GetAgencyOrdersPageHandler(IOrderRepository orderRepository, IMapper mapper)
+    public GetAgencyOrdersPageHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        _orderRepository = orderRepository;
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
 
@@ -24,7 +24,7 @@ public class GetAgencyOrdersPageHandler : IRequestHandler<GetAgencyOrdersPageQue
 
         var skip = (request.PageNumber - 1) * request.PageSize;
 
-        var query = _orderRepository.Query().Where(e => e.AgencyId == request.AgencyId);
+        var query = _unitOfWork.Orders.Query().Where(e => e.AgencyId == request.AgencyId);
 
         if (request.Status is not null)
             query = query.Where(e => e.Status == request.Status);
