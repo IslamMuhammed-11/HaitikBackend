@@ -20,6 +20,12 @@ internal class GovernmentAgencyRepository : GenericRepository<GovernmentAgency>,
         return await _context.GovernmentAgencies.AnyAsync(a => a.Name == name, ct);
     }
 
+
+    public async Task<GovernmentAgency?> GetByEmail(string email, CancellationToken ct = default)
+    {
+        return await _context.GovernmentAgencies.FirstOrDefaultAsync(e => e.Email == email);
+    }
+
     public async Task<GovernmentAgency?> GetByOrderId(int orderId, CancellationToken ct = default)
     {
         throw new NotImplementedException();

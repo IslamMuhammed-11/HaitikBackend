@@ -10,7 +10,7 @@ public partial class GovernmentAgency : BaseEntity
 
     public GeoLocation Location { get; private set; } = null!;
 
-    public string Username { get; private set; } = null!;
+    public string Email { get; private set; } = null!;
 
     public string PasswordHash { get; private set; } = null!;
 
@@ -19,17 +19,17 @@ public partial class GovernmentAgency : BaseEntity
     {
     }
 
-    private GovernmentAgency(string name, GeoLocation location, string username, string passwordHash)
+    private GovernmentAgency(string name, GeoLocation location, string email, string passwordHash)
     {
         Name = name;
         Location = location;
-        Username = username;
+        Email = email;
         PasswordHash = passwordHash;
     }
 
-    public static GovernmentAgency Create(string name, GeoLocation location, string username, string passwordHash)
+    public static GovernmentAgency Create(string name, GeoLocation location, string email, string passwordHash)
     {
-        return new GovernmentAgency(name, location, username, passwordHash);
+        return new GovernmentAgency(name, location, email, passwordHash);
     }
 
 

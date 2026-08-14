@@ -8,6 +8,8 @@ public interface IGovernmentAgencyRepository : IGenericRepository<GovernmentAgen
 
     Task<bool> DoesExistAsync(string name, CancellationToken ct = default);
 
+    Task<GovernmentAgency?> GetByEmail(string email, CancellationToken ct = default);
+
     Task<GovernmentAgency?> GetByOrderId(int orderId, CancellationToken ct = default);
 
 }

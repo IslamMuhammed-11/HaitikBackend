@@ -15,6 +15,11 @@ internal class UserRepository : GenericRepository<User>, IUserRepository
         return await _context.Users.AnyAsync(u => u.Email == email, ct);
     }
 
+    public async Task<User?> GetUserAndRoleByEmail(string email, CancellationToken ct)
+    {
+        return await _context.Users.AsNoTracking().FirstOrDefaultAsync(e => e.Email == email);
+    }
+
     public async Task<bool> DoesExistByPhoneNumber(string phoneNumber, CancellationToken ct)
     {
         return await _context.Users.AnyAsync(u => u.PhoneNumber == phoneNumber, ct);

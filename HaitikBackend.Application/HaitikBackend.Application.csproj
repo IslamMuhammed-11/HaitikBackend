@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Auth\" />
     <Folder Include="Features\BulkUploadBatch\" />
     <Folder Include="Features\NoitificationLogs\Commands\LogNotification\" />
     <Folder Include="Features\NoitificationLogs\Queries\" />

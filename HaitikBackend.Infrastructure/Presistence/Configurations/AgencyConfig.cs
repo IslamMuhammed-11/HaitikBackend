@@ -18,7 +18,7 @@ public class AgencyConfig : IEntityTypeConfiguration<GovernmentAgency>
             .IsRequired()
             .HasMaxLength(50);
 
-        builder.Property(e => e.Username)
+        builder.Property(e => e.Email)
             .IsRequired()
             .HasMaxLength(30);
 
