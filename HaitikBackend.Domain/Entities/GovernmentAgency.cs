@@ -33,6 +33,13 @@ public partial class GovernmentAgency : BaseEntity
     }
 
 
+    public void CreateRefreshToken(string tokenHash, DateTime expiry)
+    {
+        var token = RefreshToken.Create(null, Id, tokenHash, expiry);
+
+        RefreshTokens.Add(token);
+    }
+
     public virtual ICollection<Order> Orders { get; private set; } = new List<Order>();
 
     public virtual ICollection<Return> Returns { get; private set; } = new List<Return>();

@@ -9,6 +9,7 @@ using HaitikBackend.Application.Common.Interfaces.Security;
 using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using HaitikBackend.Infrastructure.Presistence;
 using HaitikBackend.Infrastructure.Presistence.UnitOfWork;
+using HaitikBackend.Infrastructure.Services;
 using HaitikBackend.Infrastructure.Services.FileStorage;
 using HaitikBackend.Infrastructure.Services.Import;
 using HaitikBackend.Infrastructure.Services.Notification;
@@ -44,6 +45,8 @@ public static class DepandencyInjection
         services.AddScoped<IOrderAssignmentService, OrderAssignmentService>();
         services.AddScoped<IBackgroundJobs, BackgroundJobsImpl>();
         services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<ITokenService, TokenService>();
+
 
         // Hangfire
         services.AddHangfire(config => config

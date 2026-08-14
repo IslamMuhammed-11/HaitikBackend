@@ -55,7 +55,13 @@ public partial class User : BaseEntity
     }
 
 
-    public RefreshToken CreateRefreshToken(string tokenHash, DateTime expiry) => RefreshToken.Create(Id, null, tokenHash, expiry);
+    public void CreateRefreshToken(string tokenHash, DateTime expiry)
+    {
+        var refreshtoken = RefreshToken.Create(Id, null, tokenHash, expiry);
+
+        RefreshTokens.Add(refreshtoken);
+
+    }
 
     public void UpdateEmail(string email)
     {
@@ -81,7 +87,7 @@ public partial class User : BaseEntity
 
     public virtual ICollection<Return> Returns { get; private set; } = new List<Return>();
 
-    public virtual ICollection<RefreshToken> RefreshTokens { get; private set; } = new List<RefreshToken>();    
+    public virtual ICollection<RefreshToken> RefreshTokens { get; private set; } = new List<RefreshToken>();
 
     public virtual Role Role { get; private set; } = null!;
 }

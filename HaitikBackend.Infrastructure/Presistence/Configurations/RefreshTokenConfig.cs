@@ -11,7 +11,7 @@ public class RefreshTokenConfig : IEntityTypeConfiguration<RefreshToken>
         builder.HasKey(e => e.Id).HasName("PK__RefreshT__3214EC07CC6018E8");
 
 
-        builder.Property(e => e.Id).ValueGeneratedNever();
+        builder.Property(e => e.Id).ValueGeneratedOnAdd();
 
         builder.Property(e => e.TokenHash).HasMaxLength(255).IsRequired();
 

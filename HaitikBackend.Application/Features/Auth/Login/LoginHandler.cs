@@ -1,5 +1,6 @@
 ﻿using HaitikBackend.Application.Common.Interfaces;
 using HaitikBackend.Application.Common.Interfaces.Security;
+using HaitikBackend.Application.Features.Auth.Common;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Errors;
@@ -30,6 +31,12 @@ public class LoginHandler : IRequestHandler<LoginCommand, Result<LoginResponse>>
         {
             var result = HandleUserLogin(request.Password, user);
 
+            var activeToken = await _unitOfWork.RefreshTokens.GetUserActiveToken(user.Id);
+
+            if (activeToken is not null)
+                activeToken.RevokeToken();
+
+
             await _unitOfWork.SaveChangesAsync();
 
             return result;
@@ -43,6 +50,11 @@ public class LoginHandler : IRequestHandler<LoginCommand, Result<LoginResponse>>
         {
             var result = HandleAgencyLogin(request.Password, agency);
 
+            var activeToken = await _unitOfWork.RefreshTokens.GetAgencyActiveToken(agency.Id);
+
+            if (activeToken is not null)
+                activeToken.RevokeToken();
+
             await _unitOfWork.SaveChangesAsync();
 
             return result;
@@ -55,24 +67,16 @@ public class LoginHandler : IRequestHandler<LoginCommand, Result<LoginResponse>>
 
 
 
-    private Result<LoginResponse> HandleUserLogin(string password, User user)
+    private Result<LoginResponse> HandleUserLogin(string password, User user )
     {
 
         if (!_passwordHasher.VerifyPassword(password, user.PasswordHash))
             return Result<LoginResponse>.Failed(AuthErrors.Unauthorized);
 
-        var accessToken = _tokenService.GenerateAcceesToken(user.Id, user.Email, user.Role.Name);
 
-        var refreshToken = _tokenService.GenerateRefreshToken();
+        var tokens = CreateNewTokens.CreateTokenForUser(_tokenService, _passwordHasher, user);
 
-
-        var hashedToken = _passwordHasher.HashPassword(refreshToken);
-
-        user.CreateRefreshToken(hashedToken, DateTime.UtcNow.AddDays(7));
-
-        var response = new LoginResponse(accessToken, refreshToken);
-
-
+        var response = new LoginResponse(tokens.AccessToken, tokens.RefreshToken);
 
         return Result<LoginResponse>.Success(response);
 
@@ -84,15 +88,10 @@ public class LoginHandler : IRequestHandler<LoginCommand, Result<LoginResponse>>
         if (!_passwordHasher.VerifyPassword(password, agency.PasswordHash))
             return Result<LoginResponse>.Failed(AuthErrors.Unauthorized);
 
-        var accessToken = _tokenService.GenerateAcceesToken(agency.Id, agency.Email, "agency");
 
-        var refreshToken = _tokenService.GenerateRefreshToken();
+        var tokens = CreateNewTokens.CreateTokenForAgency(_tokenService, _passwordHasher, agency);
 
-        var hashedToken = _passwordHasher.HashPassword(refreshToken);
-
-        agency.CreateRefreshToken(hashedToken, DateTime.UtcNow.AddDays(7));
-
-        var response = new LoginResponse(accessToken, refreshToken);
+        var response = new LoginResponse(tokens.AccessToken, tokens.RefreshToken);
 
         return Result<LoginResponse>.Success(response);
 
