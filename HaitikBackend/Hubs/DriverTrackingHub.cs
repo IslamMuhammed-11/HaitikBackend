@@ -22,17 +22,17 @@ public class DriverTrackingHub : Hub
         return base.OnConnectedAsync();
     }
 
-    public async Task SendLocation(double latitude, double longitude)
+    public async Task SendLocation(double latitude, double longitude , int driverId)
     {
 
         GeoLocation currentLocation = GeoLocation.Create(latitude, longitude);
 
-        int driverId = int.TryParse(Context.UserIdentifier, out int id) ? id : 0;
+        //int driverId = int.TryParse(Context.UserIdentifier, out int id) ? id : 0;
 
         if (driverId == 0)
             return;
 
-        await _mediator.Send(new PingLocationCommand(driverId, currentLocation, DateTime.UtcNow));
+        await _mediator.Send(new PingLocationCommand(driverId, latitude , longitude, DateTime.UtcNow));
 
         await Clients.Group("admins").SendAsync("recieveLocation", latitude, longitude, driverId);
 

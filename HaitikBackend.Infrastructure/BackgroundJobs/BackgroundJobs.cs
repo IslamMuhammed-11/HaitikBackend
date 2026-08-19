@@ -36,7 +36,7 @@ public class BackgroundJobs : IBackgroundJobs
         throw new NotImplementedException();
     }
 
-    public Task ScheduleFallbackCheck(int orderId, ICollection<DriverWithActiveOrdersCount> drivers, TimeSpan Delay)
+    public Task ScheduleFallbackCheck(int orderId, List<DriverIdWithActiveOrdersCount> drivers, TimeSpan Delay)
     {
         BackgroundJob.Schedule<IMediator>(e => e.Send(new FallbackCheckCommand(orderId, drivers)), Delay);
         return Task.CompletedTask;

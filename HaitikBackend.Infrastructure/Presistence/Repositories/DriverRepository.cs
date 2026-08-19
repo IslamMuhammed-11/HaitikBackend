@@ -24,7 +24,7 @@ internal class DriverRepository : GenericRepository<Driver>, IDriverRepository
             .FirstOrDefaultAsync(d => d.UserId == Id, ct);
     }
 
-    public async Task<ICollection<DriverWithActiveOrdersCount>> GetDriversNearPickupLocation(GeoLocation PickupLocatiom, double Radius, CancellationToken ct = default)
+    public async Task<ICollection<DriverIdWithActiveOrdersCount>> GetDriversNearPickupLocation(GeoLocation PickupLocatiom, double Radius, CancellationToken ct = default)
     {
         return await _context.Drivers
             .AsNoTracking()
@@ -38,7 +38,7 @@ internal class DriverRepository : GenericRepository<Driver>, IDriverRepository
             .Where(d => d.distance <= Radius)
             .OrderBy(d => d.distance)
             .ThenBy(d => d.activeOrdersCount)
-            .Select(x => new DriverWithActiveOrdersCount(x.driver, x.activeOrdersCount))
+            .Select(x => new DriverIdWithActiveOrdersCount(x.driver.UserId, x.activeOrdersCount))
             .ToListAsync(ct);
     }
 }

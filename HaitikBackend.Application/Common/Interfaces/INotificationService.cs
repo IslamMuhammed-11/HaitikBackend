@@ -8,6 +8,6 @@ namespace HaitikBackend.Application.Common.Interfaces;
 public interface INotificationService
 {
 
-    Task SendOrderOfferNotificationAsync(Driver driver , int orderId , TimeSpan acceptanceWindow, CancellationToken ct = default);
+    Task SendOrderOfferNotificationAsync(int driverId , int orderId , TimeSpan acceptanceWindow, CancellationToken ct = default);
 
 }

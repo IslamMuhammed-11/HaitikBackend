@@ -46,6 +46,6 @@ app.UseHangfireDashboard();
 app.MapHangfireDashboard("/hangfire");
 
 
-app.MapHub<DriverTrackingHub>("/hubs/driver-tracking");
+app.MapHub<DriverTrackingHub>("hubs/driver-tracking");
 
 app.Run();

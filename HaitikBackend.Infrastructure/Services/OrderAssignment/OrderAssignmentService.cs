@@ -6,9 +6,18 @@ namespace HaitikBackend.Infrastructure.Services.OrderAssignment;
 
 public class OrderAssignmentService : IOrderAssignmentService
 {
-    public Task<Result> AcceptOrderAssignment(
+    public async Task<Result> AcceptOrderAssignment(
         Order order,
         OrderDriverAssignment assignment,
         CancellationToken cancellationToken = default)
-        => throw new NotImplementedException();
+    {
+        var result = order.AssignDriver(assignment.DriverId);
+
+        if (!result.IsSuccess)
+            return result;
+
+        assignment.MarkAsAccepted();
+
+        return Result.Success();
+    }
 }

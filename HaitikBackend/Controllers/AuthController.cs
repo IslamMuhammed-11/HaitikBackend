@@ -1,13 +1,11 @@
 ﻿using HaitikBackend.Application.Common.Interfaces.Security;
 using HaitikBackend.Application.Features.Auth.Login;
 using HaitikBackend.Application.Features.Auth.RefreshToken;
+using HaitikBackend.Application.Features.Drivers.Commands.RegiesterDriver;
 using HaitikBackend.Application.Features.GovernmentAgencies.Commands.AddAgency;
-using HaitikBackend.Application.Features.Users.Command.RegisterUser;
-using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace HaitikBackend.API.Controllers;
 
@@ -25,9 +23,8 @@ public class AuthController : ControllerBase
         _passwordHasher = passwordHasher;
     }
 
-    // Register user (drivers or other users)
-    [HttpPost("register/user")]
-    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserCommand command)
+    [HttpPost("register/driver")]
+    public async Task<IActionResult> RegisterUser([FromBody] RegisterDriverCommand command)
     {
         var result = await _mediator.Send(command);
         return result.ToActionResult();

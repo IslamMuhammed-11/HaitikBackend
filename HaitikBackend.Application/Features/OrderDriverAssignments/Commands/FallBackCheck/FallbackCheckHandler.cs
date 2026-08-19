@@ -43,7 +43,7 @@ public class FallbackCheckHandler : IRequestHandler<FallbackCheckCommand>
         }
 
         var assignresult = await _orderAssignmentService.AcceptOrderAssignment
-                                                        (order, order.OrderDriverAssignments.First(a => a.DriverId == recommendedDriver.Driver.UserId), cancellationToken);
+                                                        (order, order.OrderDriverAssignments.First(a => a.DriverId == recommendedDriver.DriverId), cancellationToken);
 
         if (!assignresult.IsSuccess)
         {

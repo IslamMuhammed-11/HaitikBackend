@@ -1,5 +1,3 @@
-﻿using HaitikBackend.Domain.ValueObjects;
+﻿namespace HaitikBackend.Application.Features.DriverLocationPings.Queries.Responses;
 
-namespace HaitikBackend.Application.Features.DriverLocationPings.Queries.Responses;
-
-public sealed record LocationPing(int DriverId, GeoLocation Location, DateTime TimeStamp);
+public sealed record LocationPing(int DriverId, double Latitude, double Longitude, DateTime TimeStamp);

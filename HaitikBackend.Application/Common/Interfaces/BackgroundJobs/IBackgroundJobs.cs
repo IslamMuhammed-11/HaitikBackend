@@ -7,7 +7,7 @@ public interface IBackgroundJobs
 {
     Task EnqueueAutoAssignment(int orderId);
 
-    Task ScheduleFallbackCheck(int orderId, ICollection<DriverWithActiveOrdersCount> drivers, TimeSpan Delay);
+    Task ScheduleFallbackCheck(int orderId, List<DriverIdWithActiveOrdersCount> drivers, TimeSpan Delay);
 
     Task EnqueueOrderStatusNotification(int orderId, enOrderStatus currentStatus, DateTime updatedAt);
 

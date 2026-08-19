@@ -10,5 +10,5 @@ public interface IDriverRepository : IGenericRepository<Driver>
 
     Task<Driver?> GetDriverWithLocationById(int Id, CancellationToken ct = default);
 
-    Task<ICollection<DriverWithActiveOrdersCount>> GetDriversNearPickupLocation(GeoLocation PickupLocatiom, double Radius, CancellationToken ct = default);
+    Task<ICollection<DriverIdWithActiveOrdersCount>> GetDriversNearPickupLocation(GeoLocation PickupLocatiom, double Radius, CancellationToken ct = default);
 }

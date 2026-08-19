@@ -1,9 +1,7 @@
 ﻿using HaitikBackend.Application.Common.Interfaces;
 using HaitikBackend.Application.Common.Interfaces.BackgroundJobs;
-using HaitikBackend.Application.Common.Models.OfferNotificationModel;
 using HaitikBackend.Domain.DomainEvents.OrderDriverAssignment;
 using HaitikBackend.Domain.Interfaces.UnitOfWork;
-using HaitikBackend.Domain.Models.Driver;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -38,23 +36,23 @@ public class AutoAssignmentHandler : IRequestHandler<AutoAssignmentCommand>
 
         var drivers = await _unitOfWork.Drivers.GetDriversNearPickupLocation(order!.Agency.Location, Meters, cancellationToken);
 
-        //if (drivers.ToArray().Length == 0)
-        //    _backgroundJobs.EnqueueAutoAssignment()
+        if (drivers.Count == 0)
+            return;
 
 
 
-        var assignments = drivers.Select(e => order.RequestToAssignDriver(e.Driver.UserId)).ToList();
+        var assignments = drivers.Select(e => order.RequestToAssignDriver(e.DriverId)).ToList();
 
 
         await _unitOfWork.OrderDriverAssignments.AddRangeAsync(assignments, cancellationToken);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var sendOffers = drivers.Select(d => _notificationService.SendOrderOfferNotificationAsync(d.Driver, request.orderId, AcceptanceWindow, cancellationToken));
+        var sendOffers = drivers.Select(d => _notificationService.SendOrderOfferNotificationAsync(d.DriverId, request.orderId, AcceptanceWindow, cancellationToken));
 
         await Task.WhenAll(sendOffers);
 
-        await _publisher.Publish(new OrderOfferedToDriversEvent(order.Id, drivers, AcceptanceWindow), cancellationToken);
+        await _publisher.Publish(new OrderOfferedToDriversEvent(order.Id, drivers.ToList(), AcceptanceWindow), cancellationToken);
 
     }
 

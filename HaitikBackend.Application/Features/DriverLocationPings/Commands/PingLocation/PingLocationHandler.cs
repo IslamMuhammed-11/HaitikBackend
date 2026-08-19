@@ -2,6 +2,7 @@
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Errors;
 using HaitikBackend.Domain.Interfaces.UnitOfWork;
+using HaitikBackend.Domain.ValueObjects;
 using MediatR;
 
 namespace HaitikBackend.Application.Features.DriverLocationPings.Commands.PingLocation;
@@ -22,11 +23,13 @@ public class PingLocationHandler : IRequestHandler<PingLocationCommand, Result<L
         if (driver is null)
             return Result<LocationPing>.Failed(DriverErrors.DriverNotFound(request.DriverId));
 
-        driver.PingLocation(request.CurrentLocation, request.TimeStamp);
+        var currentLocation = GeoLocation.Create(request.Latitude, request.Longitude);
+
+        driver.PingLocation(currentLocation, request.TimeStamp);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var location = new LocationPing(driver.UserId, driver.DriverLocationPing!.Location, driver.DriverLocationPing.Timestamp);
+        var location = new LocationPing(driver.UserId, request.Latitude, request.Longitude, driver.DriverLocationPing!.Timestamp);
 
         return Result<LocationPing>.Success(location);
     }

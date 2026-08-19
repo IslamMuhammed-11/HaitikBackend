@@ -1,5 +1,6 @@
 using HaitikBackend.Application.Features.Return.Commands.AcceptReturn;
 using HaitikBackend.Application.Features.Return.Commands.RejectReturn;
+using HaitikBackend.Application.Features.Return.Commands.RequestReturn;
 using HaitikBackend.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -32,4 +33,14 @@ public class ReturnsController : ControllerBase
         var result = await _mediator.Send(cmd);
         return result.ToActionResult();
     }
+
+
+    [HttpPost("{id}/request")]
+    public async Task<IActionResult> RequestReturn(int id, [FromBody] RequestReturnCommand command)
+    {
+        var cmd = command with { orderId = id };
+        var result = await _mediator.Send(cmd);
+        return result.ToActionResult();
+    }
+
 }

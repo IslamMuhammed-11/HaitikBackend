@@ -1,13 +1,14 @@
 using HaitikBackend.Domain.ValueObjects;
+using NetTopologySuite.Geometries;
 
 namespace HaitikBackend.Application.Features.OrderDriverAssignment.Queries.Responses;
 
 public class DriverOffer
 {
-    public DriverOffer(int orderId, GeoLocation pickupLocation, DateTime cratedAt, DateTime? respondedAt)
+    public DriverOffer(int orderId, Point pickupLocation, DateTime cratedAt, DateTime? respondedAt)
     {
         OrderId = orderId;
-        PickupLocation = pickupLocation;
+        PickupLocation = GeoLocation.Create(pickupLocation.Y ,pickupLocation.X);
         CreatedAt = cratedAt;
         RespondedAt = respondedAt;
     }
