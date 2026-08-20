@@ -1,3 +1,5 @@
-﻿namespace HaitikBackend.Application.Common.Models.Driver;
+﻿using HaitikBackend.Domain.Entities;
 
-public sealed record DriverWithActiveOrdersCount(Domain.Entities.Driver Driver, int ActiveOrdersCount);
+namespace HaitikBackend.Application.Common.Models.Driver;
+
+public sealed record DriverWithActiveOrdersCount(HaitikBackend.Domain.Entities.Driver Driver, int ActiveOrdersCount);

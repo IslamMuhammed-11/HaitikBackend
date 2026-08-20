@@ -19,6 +19,8 @@ public class OrderAssignmentService : IOrderAssignmentService
 
             assignment.MarkAsAccepted();
 
+            order.SetStatusAsReceivedPackage();
+
             return Result.Success();
         }
         catch (DbUpdateConcurrencyException)

@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
 
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 //builder.Services.AddOpenApi();

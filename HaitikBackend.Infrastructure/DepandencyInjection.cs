@@ -7,6 +7,7 @@ using HaitikBackend.Application.Common.Interfaces.OTP;
 using HaitikBackend.Application.Common.Interfaces.PhoneNumberChecker;
 using HaitikBackend.Application.Common.Interfaces.Security;
 using HaitikBackend.Domain.Interfaces.UnitOfWork;
+using HaitikBackend.Infrastructure.Email;
 using HaitikBackend.Infrastructure.Presistence;
 using HaitikBackend.Infrastructure.Presistence.UnitOfWork;
 using HaitikBackend.Infrastructure.Services;
@@ -19,6 +20,7 @@ using HaitikBackend.Infrastructure.Services.PhoneNumber;
 using HaitikBackend.Infrastructure.Services.Security;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using BackgroundJobsImpl = HaitikBackend.Infrastructure.BackgroundJobs.BackgroundJobs;
 
@@ -26,7 +28,7 @@ namespace HaitikBackend.Infrastructure;
 
 public static class DepandencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services , IConfiguration configuration)
     {
         // Database
         services.AddDbContext<HaitikDbContext>(options =>
@@ -46,7 +48,9 @@ public static class DepandencyInjection
         services.AddScoped<IBackgroundJobs, BackgroundJobsImpl>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IEmailService, EmailService>();
 
+        services.Configure<EmailSettings>(configuration.GetSection(EmailSettings.SectionName));
 
         // Hangfire
         services.AddHangfire(config => config
