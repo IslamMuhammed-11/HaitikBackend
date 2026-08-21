@@ -1,5 +1,6 @@
-using HaitikBackend.Application.Common.Interfaces.OrderAssignment;
+
 using HaitikBackend.Domain.Common.Results;
+using HaitikBackend.Domain.DomainServices.OrderAssignmentService;
 using HaitikBackend.Domain.Errors;
 using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
@@ -29,7 +30,7 @@ public class AcceptAssignmentHandler : IRequestHandler<AcceptAssignmentCommand, 
         if (order is null)
             return Result.Failed(OrderErrors.OrderNotFound(request.OrderId));
 
-        var acceptResult = await _orderAssignmentService.AcceptOrderAssignment(order, assignment, cancellationToken);
+        var acceptResult = _orderAssignmentService.AcceptOrderAssignment(order, assignment, cancellationToken);
 
         if (!acceptResult.IsSuccess)
             return acceptResult;

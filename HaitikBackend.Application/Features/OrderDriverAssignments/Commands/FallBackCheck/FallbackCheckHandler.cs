@@ -1,4 +1,5 @@
-﻿using HaitikBackend.Application.Common.Interfaces.OrderAssignment;
+﻿
+using HaitikBackend.Domain.DomainServices.OrderAssignmentService;
 using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -42,7 +43,7 @@ public class FallbackCheckHandler : IRequestHandler<FallbackCheckCommand>
             return;
         }
 
-        var assignresult = await _orderAssignmentService.AcceptOrderAssignment
+        var assignresult =  _orderAssignmentService.AcceptOrderAssignment
                                                         (order, order.OrderDriverAssignments.First(a => a.DriverId == recommendedDriver.DriverId), cancellationToken);
 
         if (!assignresult.IsSuccess)
