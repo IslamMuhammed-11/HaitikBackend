@@ -1,7 +1,7 @@
 using HaitikBackend.Domain.Abstractions.UnitOfWork;
 using HaitikBackend.Domain.Common.Results;
-using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Errors;
+using HaitikBackend.Domain.ValueObjects;
 using MediatR;
 
 namespace HaitikBackend.Application.Features.Orders.Command.ChangeLocation;
@@ -22,7 +22,9 @@ public class ChangeLocationHandler : IRequestHandler<ChangeLocationCommand, Resu
         if (order is null)
             return Result<ChangeLocationResponse>.Failed(OrderErrors.OrderNotFound(request.OrderId));
 
-        var result = order.UpdateLocation(request.NewLocation);
+        var newLocation = GeoLocation.Create(request.Latitiude, request.Longitude);
+
+        var result = order.UpdateLocation(newLocation);
 
         if (!result.IsSuccess)
             return Result<ChangeLocationResponse>.Failed(result.Error!);
@@ -30,7 +32,7 @@ public class ChangeLocationHandler : IRequestHandler<ChangeLocationCommand, Resu
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var response = new ChangeLocationResponse(order.Id, request.NewLocation, DateTime.UtcNow);
+        var response = new ChangeLocationResponse(order.Id, request.Latitiude, request.Longitude, DateTime.UtcNow);
 
         return Result<ChangeLocationResponse>.Success(response);
     }

@@ -6,6 +6,7 @@ using HaitikBackend.Application.Features.Orders.Command.PlaceOrder;
 using HaitikBackend.Application.Features.Orders.Queries.GetAgencyOrdersPage;
 using HaitikBackend.Application.Features.Orders.Queries.GetAllOrdersPage;
 using HaitikBackend.Application.Features.Orders.Queries.GetOrderDetails;
+using HaitikBackend.Application.Features.Orders.Queries.GetOrdersByDriverPage;
 using HaitikBackend.Application.Features.OrderStatusHistories.Queries.GetOrderStatusHistoriesPage;
 using HaitikBackend.Domain.Enums;
 using HaitikBackend.Extensions;
@@ -34,6 +35,7 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPost("bulk-upload")]
+    [Consumes("multipart/form-data")]
     public async Task<IActionResult> BulkUpload(BulkUploadRequest request)
     {
         if (request.File is null || request.File.Length == 0)
@@ -74,6 +76,14 @@ public class OrdersController : ControllerBase
             var result = await _mediator.Send(query);
             return result.ToActionResult();
         }
+    }
+
+    [HttpGet("driver/{driverId:int}")]
+    public async Task<IActionResult> GetDriverOrders(int driverId, [FromQuery] enOrderStatus? status, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 1)
+    {
+        var query = new GetOrdersByDriverPageQuery(driverId, status, pageSize, pageNumber);
+        var result = await _mediator.Send(query);
+        return result.ToActionResult();
     }
 
     [HttpGet("{id}")]

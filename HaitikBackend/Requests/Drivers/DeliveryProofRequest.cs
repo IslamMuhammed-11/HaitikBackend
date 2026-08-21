@@ -2,4 +2,4 @@
 
 namespace HaitikBackend.API.Requests.Drivers;
 
-public sealed record DeliveryProofRequest(IFormFile File, string ReciverName, string? deliveryNotes);
+public sealed record DeliveryProofRequest([FromBody]string ReciverName, [FromBody]string? deliveryNotes);

@@ -4,4 +4,4 @@ using MediatR;
 
 namespace HaitikBackend.Application.Features.Orders.Command.ChangeLocation;
 
-public sealed record ChangeLocationCommand(int OrderId, GeoLocation NewLocation) : IRequest<Result<ChangeLocationResponse>>;
+public sealed record ChangeLocationCommand(int OrderId, double Latitiude , double Longitude) : IRequest<Result<ChangeLocationResponse>>;

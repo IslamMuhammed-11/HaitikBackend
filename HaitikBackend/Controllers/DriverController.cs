@@ -1,4 +1,3 @@
-using HaitikBackend.API.Requests.Drivers;
 using HaitikBackend.Application.Common.Models.FileModels;
 using HaitikBackend.Application.Features.DeliveryProofs.Commands.ProofDelivery;
 using HaitikBackend.Application.Features.DriverLocationPings.Commands.PingLocation;
@@ -49,33 +48,46 @@ public class DriverController : ControllerBase
         return result.ToActionResult();
     }
 
-    [HttpPost("location")]
-    public async Task<IActionResult> UpdateLocation([FromBody] PingLocationCommand command)
-    {
-        var result = await _mediator.Send(command);
-        return result.ToActionResult();
-    }
-
     [HttpPost("orders/{id}/pod")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> ProofOfDelivery(int id, DeliveryProofRequest request)
+    public async Task<IActionResult> ProofOfDelivery(int id, IFormFile File, [FromQuery] string ReciverName, [FromQuery] string? deliveryNotes)
     {
-        if (request.File is null || request.File.Length == 0)
+        if (File is null || File.Length == 0)
             return BadRequest("No file uploaded.");
 
         var fileUpload = new FileUpload
         {
-            Content = request.File.OpenReadStream(),
-            FileName = request.File.FileName,
-            ContentType = request.File.ContentType,
-            Extension = Path.GetExtension(request.File.FileName),
-            Length = request.File.Length
+            Content = File.OpenReadStream(),
+            FileName = File.FileName,
+            ContentType = File.ContentType,
+            Extension = Path.GetExtension(File.FileName),
+            Length = File.Length
         };
 
-        var command = new ProofDeliveryCommand(id, fileUpload, request.ReciverName, request.deliveryNotes);
+        var command = new ProofDeliveryCommand(id, fileUpload, ReciverName, deliveryNotes);
         var result = await _mediator.Send(command);
         return result.ToActionResult();
     }
+
+
+    //[HttpPost("orders/{id}/pod")]
+    //[Consumes("multipart/form-data")]
+    //public async Task< IActionResult> ProofOfDelivery(
+    //int id,
+    // IFormFile file,
+    // string reciverName,
+    // string? deliveryNotes)
+    //{
+    //    return Ok(new
+    //    {
+    //        id,
+    //        file.FileName,
+    //        file.ContentType,
+    //        file.Length,
+    //        reciverName,
+    //        deliveryNotes
+    //    });
+    //}
 
     [HttpPost("orders/{id}/delivery/request-otp")]
     public async Task<IActionResult> RequestDeliveryOtp(int id)

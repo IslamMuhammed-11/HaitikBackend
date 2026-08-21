@@ -33,7 +33,7 @@ public class BackgroundJobs : IBackgroundJobs
 
     public Task EnqueueSendOrderDeliveryOtp(int ordrId)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 
     public Task ScheduleFallbackCheck(int orderId, List<DriverIdWithActiveOrdersCount> drivers, TimeSpan Delay)

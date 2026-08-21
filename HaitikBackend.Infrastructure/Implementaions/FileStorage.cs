@@ -6,7 +6,37 @@ namespace HaitikBackend.Infrastructure.Implementaions;
 
 public class FileStorage : IFileStorage
 {
-    public Task<Result<FileResult>> UploadAsync(
-        Application.Common.Models.FileModels.FileUpload file, CancellationToken ct = default)
-        => throw new NotImplementedException();
+
+    const string directory = @"C:\Users\Eslam\Desktop\pod";
+
+    public async Task<Result<FileResult>> UploadAsync(
+        FileUpload file, CancellationToken ct = default)
+    {
+
+        try
+        {
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            var filename = $"{Guid.NewGuid()}{file.Extension}";
+
+            var path = Path.Combine(directory, filename);
+
+            await using var stream = File.Create(path);
+            await file.Content.CopyToAsync(stream);
+
+            var result = new FileResult(path, filename);
+
+            return Result<FileResult>.Success(result);
+
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+
+    }
 }
