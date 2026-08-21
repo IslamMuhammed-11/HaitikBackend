@@ -57,25 +57,27 @@ public class AuthController : ControllerBase
 
 
     // Logout: revoke refresh tokens for a user or agency
-    //[HttpPost("logout")]
-    //public async Task<IActionResult> Logout([FromBody] LogoutRequest request)
-    //{
-    //    var query = _unitOfWork.RefreshTokens.Query();
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout([FromBody] LogoutRequest request)
+    {
+        //var query = _unitOfWork.RefreshTokens.Query();
 
-    //    var tokens = await query
-    //        .Where(t => (request.UserId.HasValue && t.UserId == request.UserId) || (request.AgencyId.HasValue && t.AgencyId == request.AgencyId))
-    //        .ToListAsync();
+        //var tokens = await query
+        //    .Where(t => (request.UserId.HasValue && t.UserId == request.UserId) || (request.AgencyId.HasValue && t.AgencyId == request.AgencyId))
+        //    .ToListAsync();
 
-    //    if (!tokens.Any())
-    //        return Result.Success().ToActionResult();
+        //if (!tokens.Any())
+        //    return Result.Success().ToActionResult();
 
-    //    foreach (var t in tokens)
-    //        t.RevokeToken();
+        //foreach (var t in tokens)
+        //    t.RevokeToken();
 
-    //    await _unitOfWork.SaveChangesAsync();
+        //await _unitOfWork.SaveChangesAsync();
 
-    //    return Result.Success().ToActionResult();
-    //}
+        //return Result.Success().ToActionResult();
+
+        throw new NotImplementedException();
+    }
 
     // DTOs
     public sealed record LoginRequest(string Identifier, string Password);

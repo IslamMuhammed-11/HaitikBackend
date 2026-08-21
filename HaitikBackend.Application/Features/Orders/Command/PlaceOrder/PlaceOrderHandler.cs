@@ -9,28 +9,37 @@ using MediatR;
 
 namespace HaitikBackend.Application.Features.Orders.Command.PlaceOrder;
 
-public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<int>>
+public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<PlaceOrderResponse>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPhoneNumberChecker _phoneNumberChecker;
-    public PlaceOrderHandler(IUnitOfWork unitOfWork, IPhoneNumberChecker phoneNumberChecker)
+    private readonly ITokenService _tokenService;
+
+    private readonly IPasswordHasher _passwordHasher;
+    public PlaceOrderHandler(IUnitOfWork unitOfWork, IPhoneNumberChecker phoneNumberChecker, ITokenService tokenService, IPasswordHasher passwordHasher)
     {
         _unitOfWork = unitOfWork;
         _phoneNumberChecker = phoneNumberChecker;
+        _tokenService = tokenService;
+        _passwordHasher = passwordHasher;
     }
 
-    public async Task<Result<int>> Handle(PlaceOrderCommand request, CancellationToken cancellationToken)
+    public async Task<Result<PlaceOrderResponse>> Handle(PlaceOrderCommand request, CancellationToken cancellationToken)
     {
 
         var validatorResult = await ValidateRequest(request, cancellationToken);
 
         if (!validatorResult.IsSuccess)
-            return Result<int>.Failed(validatorResult.Error!);
+            return Result<PlaceOrderResponse>.Failed(validatorResult.Error!);
 
         var pickupLocation = GeoLocation.Create(request.Latitude, request.Longitude);
 
 
-        var order = Order.Create(request.CustomerPhoneNumber, DateTime.UtcNow, pickupLocation, request.AgencyId);
+        var token = _tokenService.GenerateRefreshToken();
+
+        var hashedtoken = _passwordHasher.HashPassword(token);
+
+        var order = Order.Create(request.CustomerPhoneNumber, DateTime.UtcNow, pickupLocation, request.AgencyId, hashedtoken);
 
         _unitOfWork.Orders.Add(order);
 
@@ -38,7 +47,9 @@ public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<int>>
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result<int>.Success(order.Id);
+        var response = new PlaceOrderResponse(order.Id, token);
+
+        return Result<PlaceOrderResponse>.Success(response);
 
     }
 

@@ -26,11 +26,13 @@ public partial class Order : BaseEntity
 
     public byte[] RowVersion { get; private set; } = default!;
 
+    public string? TrackingTokenHash { get; private set; }
+
     private Order()
     {
     }
 
-    private Order(enOrderStatus status, string customerPhoneNumber, int? assignedDriver, DateTime createdAt, GeoLocation pickupLocation, int employeeId)
+    private Order(enOrderStatus status, string customerPhoneNumber, int? assignedDriver, DateTime createdAt, GeoLocation pickupLocation, int employeeId, string? trackingTokenHash)
     {
         Status = status;
         CustomerPhoneNumber = customerPhoneNumber;
@@ -38,15 +40,16 @@ public partial class Order : BaseEntity
         CreatedAt = createdAt;
         DeliveryLocation = pickupLocation;
         AgencyId = employeeId;
+        TrackingTokenHash = trackingTokenHash;
 
     }
 
 
-    public static Order Create(string customerPhoneNumber, DateTime createdAt, GeoLocation pickupLocation, int agencyId,
+    public static Order Create(string customerPhoneNumber, DateTime createdAt, GeoLocation pickupLocation, int agencyId, string? trackingTokenHash,
                                                  enOrderStatus status = enOrderStatus.Pending, int? assignedDriver = null)
     {
         return
-            new Order(status, customerPhoneNumber, assignedDriver, createdAt, pickupLocation, agencyId);
+            new Order(status, customerPhoneNumber, assignedDriver, createdAt, pickupLocation, agencyId, trackingTokenHash);
 
 
     }

@@ -26,6 +26,8 @@ public class OrderConfig : IEntityTypeConfiguration<Order>
 
         builder.Property(e => e.RowVersion).IsRowVersion();
 
+        builder.Property(e => e.TrackingTokenHash);
+
         builder.HasOne(d => d.Agency).WithMany(p => p.Orders)
             .HasForeignKey(d => d.AgencyId)
             .OnDelete(DeleteBehavior.Cascade)
