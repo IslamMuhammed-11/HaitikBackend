@@ -1,8 +1,7 @@
-﻿using HaitikBackend.Application.Common.Interfaces;
-using HaitikBackend.Application.Common.Interfaces.BackgroundJobs;
+﻿using HaitikBackend.Application.Abstractions;
 using HaitikBackend.Application.Common.Models;
+using HaitikBackend.Domain.Abstractions.UnitOfWork;
 using HaitikBackend.Domain.DomainEvents.OrderDriverAssignment;
-using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using HaitikBackend.Domain.Models.Driver;
 using MediatR;
 using Microsoft.Extensions.Logging;

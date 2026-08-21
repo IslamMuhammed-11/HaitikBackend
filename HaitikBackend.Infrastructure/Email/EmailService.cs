@@ -1,4 +1,4 @@
-﻿using HaitikBackend.Application.Common.Interfaces;
+﻿using HaitikBackend.Application.Abstractions;
 using HaitikBackend.Application.Common.Models.Email;
 using Microsoft.Extensions.Options;
 using MimeKit;

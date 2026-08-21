@@ -1,4 +1,4 @@
-using HaitikBackend.Domain.Interfaces.Repositories;
+using HaitikBackend.Domain.Abstractions.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace HaitikBackend.Infrastructure.Presistence.Repositories;

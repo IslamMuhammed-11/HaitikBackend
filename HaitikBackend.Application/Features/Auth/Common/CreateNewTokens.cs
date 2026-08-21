@@ -1,5 +1,4 @@
-﻿using HaitikBackend.Application.Common.Interfaces;
-using HaitikBackend.Application.Common.Interfaces.Security;
+﻿using HaitikBackend.Application.Abstractions;
 using HaitikBackend.Domain.Entities;
 
 namespace HaitikBackend.Application.Features.Auth.Common;

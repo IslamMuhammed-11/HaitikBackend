@@ -1,9 +1,9 @@
-﻿using HaitikBackend.Application.Common.Interfaces.PhoneNumberChecker;
+﻿using HaitikBackend.Application.Abstractions;
+using HaitikBackend.Domain.Abstractions.UnitOfWork;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.DomainEvents.OrderEvents;
 using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Errors;
-using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using HaitikBackend.Domain.ValueObjects;
 using MediatR;
 

@@ -1,5 +1,5 @@
-using HaitikBackend.Domain.Interfaces.Repositories;
-using HaitikBackend.Domain.Interfaces.UnitOfWork;
+using HaitikBackend.Domain.Abstractions.Repositories;
+using HaitikBackend.Domain.Abstractions.UnitOfWork;
 using HaitikBackend.Infrastructure.Presistence.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 

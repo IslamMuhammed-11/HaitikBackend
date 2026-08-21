@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using HaitikBackend.Domain.Abstractions.UnitOfWork;
 using HaitikBackend.Domain.Common.Results;
-using HaitikBackend.Domain.Interfaces.Repositories;
-using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

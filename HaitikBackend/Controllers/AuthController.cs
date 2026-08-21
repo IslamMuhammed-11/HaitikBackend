@@ -1,4 +1,4 @@
-﻿using HaitikBackend.Application.Common.Interfaces.Security;
+﻿using HaitikBackend.Application.Abstractions;
 using HaitikBackend.Application.Features.Auth.Login;
 using HaitikBackend.Application.Features.Auth.RefreshToken;
 using HaitikBackend.Application.Features.Drivers.Commands.RegiesterDriver;

@@ -1,6 +1,6 @@
+using HaitikBackend.Domain.Abstractions.Repositories;
 using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Enums;
-using HaitikBackend.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace HaitikBackend.Infrastructure.Presistence.Repositories;

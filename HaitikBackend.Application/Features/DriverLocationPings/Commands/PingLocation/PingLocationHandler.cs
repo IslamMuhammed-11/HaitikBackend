@@ -1,7 +1,7 @@
 ﻿using HaitikBackend.Application.Features.DriverLocationPings.Queries.Responses;
+using HaitikBackend.Domain.Abstractions.UnitOfWork;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Errors;
-using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using HaitikBackend.Domain.ValueObjects;
 using MediatR;
 

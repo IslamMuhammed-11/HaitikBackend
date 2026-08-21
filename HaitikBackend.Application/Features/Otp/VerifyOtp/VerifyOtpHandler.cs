@@ -1,9 +1,9 @@
-using HaitikBackend.Application.Common.Interfaces.Security;
+using HaitikBackend.Application.Abstractions;
+using HaitikBackend.Domain.Abstractions.UnitOfWork;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.DomainEvents.OTP;
 using HaitikBackend.Domain.Entities;
 using HaitikBackend.Domain.Errors;
-using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 
 namespace HaitikBackend.Application.Features.Otp.VerifyOtp;

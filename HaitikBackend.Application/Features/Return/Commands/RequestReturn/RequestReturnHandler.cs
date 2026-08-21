@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using HaitikBackend.Application.Features.Return.Queries.Responses;
+using HaitikBackend.Domain.Abstractions.UnitOfWork;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Errors;
-using HaitikBackend.Domain.Interfaces.UnitOfWork;
 using MediatR;
 
 namespace HaitikBackend.Application.Features.Return.Commands.RequestReturn;

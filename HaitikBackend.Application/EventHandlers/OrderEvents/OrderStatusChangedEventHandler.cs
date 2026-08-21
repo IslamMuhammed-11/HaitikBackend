@@ -1,4 +1,4 @@
-﻿using HaitikBackend.Application.Common.Interfaces.BackgroundJobs;
+﻿using HaitikBackend.Application.Abstractions;
 using HaitikBackend.Domain.DomainEvents.OrderEvents;
 using MediatR;
 

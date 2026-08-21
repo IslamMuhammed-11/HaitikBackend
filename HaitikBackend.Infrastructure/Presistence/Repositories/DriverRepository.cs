@@ -1,6 +1,6 @@
 
+using HaitikBackend.Domain.Abstractions.Repositories;
 using HaitikBackend.Domain.Entities;
-using HaitikBackend.Domain.Interfaces.Repositories;
 using HaitikBackend.Domain.Models.Driver;
 using HaitikBackend.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
