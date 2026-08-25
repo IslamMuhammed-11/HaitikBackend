@@ -54,6 +54,9 @@ public partial class Order : BaseEntity
 
     }
 
+
+   
+
     public Result SetStatusAsReceivedPackage() =>
         _ChangeOrderStatus(enOrderStatus.ReceivedPackage);
 

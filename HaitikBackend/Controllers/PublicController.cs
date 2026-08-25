@@ -4,7 +4,7 @@ namespace HaitikBackend.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class Public : ControllerBase
+public class PublicController : ControllerBase
 {
 
 

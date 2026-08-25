@@ -4,4 +4,4 @@ using MediatR;
 
 namespace HaitikBackend.Application.Features.Return.Commands.RequestReturn;
 
-public sealed record RequestReturnCommand(int orderId,  string reason) : IRequest<Result<ReturnRequest>>;
+public sealed record RequestReturnCommand(int orderId,  string reason) : IRequest<Result<int>>;

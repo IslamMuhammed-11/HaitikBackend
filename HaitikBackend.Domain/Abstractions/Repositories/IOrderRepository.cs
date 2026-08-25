@@ -11,4 +11,7 @@ public interface IOrderRepository : IGenericRepository<Order>
     Task<Order?> GetByIdWithAssignmentsAsync(int Id, CancellationToken ct = default);
 
     Task<Order?> GetOrderAndAgencyByIdAsync(int Id, CancellationToken cancellationToken = default);
+
+
+    void AddRange(List<Order> orders);
 }

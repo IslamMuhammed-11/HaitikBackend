@@ -1,4 +1,4 @@
-﻿namespace HaitikBackend.Infrastructure.Email;
+﻿namespace HaitikBackend.Infrastructure;
 
 public sealed class EmailSettings
 {

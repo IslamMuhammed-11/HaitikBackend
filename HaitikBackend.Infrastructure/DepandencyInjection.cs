@@ -1,9 +1,7 @@
 using HaitikBackend.Application.Abstractions;
-using HaitikBackend.Application.Abstractions.Import.ImporterFactory;
 using HaitikBackend.Domain.Abstractions.UnitOfWork;
 using HaitikBackend.Domain.DomainServices.OrderAssignment;
 using HaitikBackend.Domain.DomainServices.OrderAssignmentService;
-using HaitikBackend.Infrastructure.Email;
 using HaitikBackend.Infrastructure.Implementaions;
 using HaitikBackend.Infrastructure.Presistence;
 using HaitikBackend.Infrastructure.Presistence.UnitOfWork;
@@ -17,7 +15,7 @@ namespace HaitikBackend.Infrastructure;
 
 public static class DepandencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services , IConfiguration configuration)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         // Database
         services.AddDbContext<HaitikDbContext>(options =>
@@ -32,7 +30,7 @@ public static class DepandencyInjection
         services.AddScoped<IPhoneNumberChecker, PhoneNumberChecker>();
         services.AddScoped<IOtpGenerator, OtpGenerator>();
         services.AddScoped<IFileStorage, FileStorage>();
-        services.AddScoped<IDocumentImporterFactory, DocumentImporterFactory>();
+        services.AddScoped<IDocumentImporter, DocumentImporter>();
         services.AddScoped<IOrderAssignmentService, OrderAssignmentService>();
         services.AddScoped<IBackgroundJobs, BackgroundJobsImpl>();
         services.AddScoped<INotificationService, NotificationService>();

@@ -4,4 +4,4 @@ using MediatR;
 
 namespace HaitikBackend.Application.Features.Orders.Command.BulkUpload;
 
-public sealed record BulkUploadCommand(FileUpload File) : IRequest<Result>;
+public sealed record BulkUploadCommand(FileUpload File , int UploadedBy) : IRequest<Result>;

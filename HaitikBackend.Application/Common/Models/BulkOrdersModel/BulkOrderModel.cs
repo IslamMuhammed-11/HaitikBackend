@@ -2,4 +2,4 @@
 
 namespace HaitikBackend.Application.Common.Models.BulkOrdersModel;
 
-public sealed record BulkOrderModel(GeoLocation DeliveryLocation, string CustomerPhoneNumber, int AgencyId);
+public sealed record BulkOrderModel(double Latitude , double Longitude, string CustomerPhoneNumber);

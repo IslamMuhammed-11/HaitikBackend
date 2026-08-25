@@ -1,7 +1,7 @@
-using HaitikBackend.API.Requests.Orders;
 using HaitikBackend.Application.Common.Models.FileModels;
 using HaitikBackend.Application.Features.Orders.Command.BulkUpload;
 using HaitikBackend.Application.Features.Orders.Command.ChangeLocation;
+using HaitikBackend.Application.Features.Orders.Command.MarkAsDelivering;
 using HaitikBackend.Application.Features.Orders.Command.PlaceOrder;
 using HaitikBackend.Application.Features.Orders.Queries.GetAgencyOrdersPage;
 using HaitikBackend.Application.Features.Orders.Queries.GetAllOrdersPage;
@@ -34,23 +34,23 @@ public class OrdersController : ControllerBase
         return result.ToActionResult();
     }
 
-    [HttpPost("bulk-upload")]
+    [HttpPost("bulk-upload/{agencyId}")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> BulkUpload(BulkUploadRequest request)
+    public async Task<IActionResult> BulkUpload(int agencyId, IFormFile file)
     {
-        if (request.File is null || request.File.Length == 0)
+        if (file is null || file.Length == 0)
             return BadRequest("No file uploaded.");
 
         var fileUpload = new FileUpload
         {
-            Content = request.File.OpenReadStream(),
-            FileName = request.File.FileName,
-            ContentType = request.File.ContentType,
-            Extension = Path.GetExtension(request.File.FileName),
-            Length = request.File.Length
+            Content = file.OpenReadStream(),
+            FileName = file.FileName,
+            ContentType = file.ContentType,
+            Extension = Path.GetExtension(file.FileName),
+            Length = file.Length
         };
 
-        var command = new BulkUploadCommand(fileUpload);
+        var command = new BulkUploadCommand(fileUpload, agencyId);
         var result = await _mediator.Send(command);
         return result.ToActionResult();
     }
@@ -99,6 +99,17 @@ public class OrdersController : ControllerBase
     {
         var cmd = command with { OrderId = id };
         var result = await _mediator.Send(cmd);
+        return result.ToActionResult();
+    }
+
+
+    [HttpPatch("{id}/marks-as-delivering")]
+    public async Task<IActionResult> MarkOrderAsDelivering(int id)
+    {
+        var cmd = new MarkAsDeliveringCommand(id);
+
+        var result = await _mediator.Send(cmd);
+
         return result.ToActionResult();
     }
 

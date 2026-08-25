@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HaitikBackend.Infrastructure.Email;
+namespace HaitikBackend.Infrastructure.Implementaions;
 
 public class EmailService : IEmailService
 {

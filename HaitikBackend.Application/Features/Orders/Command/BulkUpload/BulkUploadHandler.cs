@@ -1,7 +1,10 @@
-﻿using HaitikBackend.Application.Abstractions.Import.ImporterFactory;
+﻿using HaitikBackend.Application.Abstractions;
+using HaitikBackend.Application.Common.Models.BulkOrdersModel;
 using HaitikBackend.Domain.Abstractions.UnitOfWork;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Entities;
+using HaitikBackend.Domain.Errors;
+using HaitikBackend.Domain.ValueObjects;
 using MediatR;
 
 namespace HaitikBackend.Application.Features.Orders.Command.BulkUpload;
@@ -10,32 +13,41 @@ public class BulkUploadHandler : IRequestHandler<BulkUploadCommand, Result>
 {
 
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IDocumentImporterFactory _importerFactory;
+    private readonly IDocumentImporter _importer;
 
-    public BulkUploadHandler(IUnitOfWork unitOfWork, IDocumentImporterFactory documentImporterFactory)
+    public BulkUploadHandler(IUnitOfWork unitOfWork, IDocumentImporter importer)
     {
-        _importerFactory = documentImporterFactory;
         _unitOfWork = unitOfWork;
+        _importer = importer;
     }
 
     public async Task<Result> Handle(BulkUploadCommand request, CancellationToken cancellationToken)
     {
+        if (!request.File.Validate())
+            return Result.Failed(BulkUploadErrors.UploadFailed);
 
-        //var importerResult = _importerFactory.Get(request.File.Extension);
 
-        //if (!importerResult.IsSuccess)
-        //    return Result.Failed(importerResult.Error!);
+        BulkUploadResult result = _importer.Parse(request.File.Content);
 
-        ////var orders = importerResult.Value!.Parse(request.File);
+        var batch = BulkUploadBatch.Create(request.UploadedBy, result.orders.Count, "Uploaded");
 
-        //foreach (var order in orders)
-        //{
-        //    var entity = Order.Create(order.CustomerPhoneNumber, DateTime.Now, order.DeliveryLocation, order.AgencyId);
+        _unitOfWork.BulkUploadBatchs.Add(batch);
 
-        //    _unitOfWork.Orders.Add(entity);
-        //}
+        var orders = new List<Order>();
 
-        //await _unitOfWork.SaveChangesAsync(cancellationToken);
+        foreach (var order in result.orders)
+        {
+
+            var location = GeoLocation.Create(order.Latitude, order.Longitude);
+
+            var orderCreation = Order.Create(order.CustomerPhoneNumber, DateTime.UtcNow, location, request.UploadedBy, null);
+
+            orders.Add(orderCreation);
+        }
+
+        _unitOfWork.Orders.AddRange(orders);
+
+        await _unitOfWork.SaveChangesAsync();
 
         return Result.Success();
     }

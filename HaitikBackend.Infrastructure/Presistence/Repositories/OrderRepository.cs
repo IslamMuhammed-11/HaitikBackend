@@ -35,5 +35,9 @@ internal class OrderRepository : GenericRepository<Order>, IOrderRepository
             .FirstOrDefaultAsync(o => o.Id == Id, cancellationToken);
     }
 
+    public void AddRange(List<Order> orders)
+    {
+        _context.AddRange(orders);
+    }
 
 }
