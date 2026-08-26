@@ -1,22 +1,49 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using HaitikBackend.Application.Features.PublicTracking.TrackOrder;
+using MediatR;
+using Microsoft.AspNetCore.SignalR;
 
 namespace HaitikBackend.API.Hubs;
 
 public class OrderTrackingHub : Hub
 {
-    public override Task OnConnectedAsync()
+    private readonly IMediator _mediator;
+    private int? _orderId;
+
+    public OrderTrackingHub(IMediator mediator)
     {
-        return base.OnConnectedAsync();
+        _mediator = mediator;
     }
 
+    public static string GetGroupName(int orderId) => $"order:{orderId}";
 
-
-
-
-
-    public override Task OnDisconnectedAsync(Exception? exception)
+    public override async Task OnConnectedAsync()
     {
-        return base.OnDisconnectedAsync(exception);
+        var token = Context.GetHttpContext()?.Request.Query["tracking_token"].ToString();
+
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            Context.Abort();
+            return;
+        }
+
+        var result = await _mediator.Send(new TrackOrderQuery(token));
+
+        if (!result.IsSuccess || result.Value is null)
+        {
+            Context.Abort();
+            return;
+        }
+
+        _orderId = result.Value.OrderId;
+        await Groups.AddToGroupAsync(Context.ConnectionId, GetGroupName(_orderId.Value));
+        await base.OnConnectedAsync();
     }
 
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        if (_orderId.HasValue)
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, GetGroupName(_orderId.Value));
+
+        await base.OnDisconnectedAsync(exception);
+    }
 }

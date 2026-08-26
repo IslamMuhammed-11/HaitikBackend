@@ -11,5 +11,7 @@ public interface IBackgroundJobs
 
     Task EnqueueOrderStatusNotification(int orderId, enOrderStatus currentStatus, DateTime updatedAt);
 
+    Task EnqueueCreateTrackingAccess(int orderId , string? email);
+
     Task EnqueueSendOrderDeliveryOtp(int ordrId);
 }

@@ -1,5 +1,6 @@
 using HaitikBackend.API.Hubs;
 using HaitikBackend.Application;
+using HaitikBackend.Application.Abstractions;
 using HaitikBackend.Infrastructure;
 using Hangfire;
 using System.Text.Json.Serialization;
@@ -18,6 +19,7 @@ builder.Services.AddControllers()
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<IOrderTrackingNotifier, OrderTrackingNotifier>();
 
 
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -54,5 +56,6 @@ app.MapHangfireDashboard("/hangfire");
 
 
 app.MapHub<DriverTrackingHub>("hubs/driver-tracking");
+app.MapHub<OrderTrackingHub>("hubs/order-tracking");
 
 app.Run();

@@ -40,7 +40,7 @@ public class BulkUploadHandler : IRequestHandler<BulkUploadCommand, Result>
 
             var location = GeoLocation.Create(order.Latitude, order.Longitude);
 
-            var orderCreation = Order.Create(order.CustomerPhoneNumber, DateTime.UtcNow, location, request.UploadedBy, null);
+            var orderCreation = Order.Create(order.CustomerPhoneNumber,null, DateTime.UtcNow, location, request.UploadedBy, null);
 
             orders.Add(orderCreation);
         }

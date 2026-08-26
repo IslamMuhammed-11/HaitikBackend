@@ -1,6 +1,7 @@
 ﻿using HaitikBackend.Application.Abstractions;
 using HaitikBackend.Application.Features.OrderDriverAssignments.Commands.AutoAssignment;
 using HaitikBackend.Application.Features.OrderDriverAssignments.Commands.FallBackCheck;
+using HaitikBackend.Application.Features.PublicTracking.CreateTrackingAccess;
 using HaitikBackend.Domain.Enums;
 using HaitikBackend.Domain.Models.Driver;
 using Hangfire;
@@ -29,6 +30,13 @@ public class BackgroundJobs : IBackgroundJobs
     {
         throw new NotImplementedException();
 
+    }
+
+    public Task EnqueueCreateTrackingAccess(int orderId, string? email)
+    {
+        BackgroundJob.Enqueue<IMediator>(e => e.Send(new CreateTrackingAccessCommand(orderId, email)));
+
+        return Task.CompletedTask;
     }
 
     public Task EnqueueSendOrderDeliveryOtp(int ordrId)

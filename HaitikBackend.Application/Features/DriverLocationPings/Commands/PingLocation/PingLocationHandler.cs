@@ -1,7 +1,9 @@
-﻿using HaitikBackend.Application.Features.DriverLocationPings.Queries.Responses;
+﻿using HaitikBackend.Application.Abstractions;
+using HaitikBackend.Application.Features.DriverLocationPings.Queries.Responses;
 using HaitikBackend.Domain.Abstractions.UnitOfWork;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Errors;
+using HaitikBackend.Domain.Enums;
 using HaitikBackend.Domain.ValueObjects;
 using MediatR;
 
@@ -10,10 +12,12 @@ namespace HaitikBackend.Application.Features.DriverLocationPings.Commands.PingLo
 public class PingLocationHandler : IRequestHandler<PingLocationCommand, Result<LocationPing>>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IOrderTrackingNotifier _trackingNotifier;
 
-    public PingLocationHandler(IUnitOfWork unitOfWork)
+    public PingLocationHandler(IUnitOfWork unitOfWork, IOrderTrackingNotifier trackingNotifier)
     {
         _unitOfWork = unitOfWork;
+        _trackingNotifier = trackingNotifier;
     }
 
     public async Task<Result<LocationPing>> Handle(PingLocationCommand request, CancellationToken cancellationToken)
@@ -28,6 +32,16 @@ public class PingLocationHandler : IRequestHandler<PingLocationCommand, Result<L
         driver.PingLocation(currentLocation, request.TimeStamp);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        foreach (var order in driver.Orders.Where(order => order.Status == enOrderStatus.Delivering))
+        {
+            await _trackingNotifier.NotifyDriverLocationChangedAsync(
+                order.Id,
+                request.Latitude,
+                request.Longitude,
+                request.TimeStamp,
+                cancellationToken);
+        }
 
         var location = new LocationPing(driver.UserId, request.Latitude, request.Longitude, driver.DriverLocationPing!.Timestamp);
 

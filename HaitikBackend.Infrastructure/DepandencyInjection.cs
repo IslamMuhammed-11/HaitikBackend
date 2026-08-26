@@ -27,6 +27,8 @@ public static class DepandencyInjection
 
         // Services
         services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddSingleton<ITrackingTokenGenerator, TrackingTokenGenerator>();
+        services.AddSingleton<ITrackingTokenHasher, TrackingTokenHasher>();
         services.AddScoped<IPhoneNumberChecker, PhoneNumberChecker>();
         services.AddScoped<IOtpGenerator, OtpGenerator>();
         services.AddScoped<IFileStorage, FileStorage>();

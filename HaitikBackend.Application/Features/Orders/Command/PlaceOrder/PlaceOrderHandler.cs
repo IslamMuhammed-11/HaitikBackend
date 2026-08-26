@@ -35,11 +35,7 @@ public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<Place
         var pickupLocation = GeoLocation.Create(request.Latitude, request.Longitude);
 
 
-        var token = _tokenService.GenerateRefreshToken();
-
-        var hashedtoken = _passwordHasher.HashPassword(token);
-
-        var order = Order.Create(request.CustomerPhoneNumber, DateTime.UtcNow, pickupLocation, request.AgencyId, hashedtoken);
+        var order = Order.Create(request.CustomerPhoneNumber,request.CustomerEmail, DateTime.UtcNow, pickupLocation, request.AgencyId, null);
 
         _unitOfWork.Orders.Add(order);
 
@@ -47,7 +43,7 @@ public class PlaceOrderHandler : IRequestHandler<PlaceOrderCommand, Result<Place
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var response = new PlaceOrderResponse(order.Id, token);
+        var response = new PlaceOrderResponse(order.Id);
 
         return Result<PlaceOrderResponse>.Success(response);
 

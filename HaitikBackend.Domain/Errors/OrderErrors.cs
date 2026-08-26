@@ -21,4 +21,6 @@ public static class OrderErrors
     public static Error OrderAlreadyHasReturnRequest => Error.Create("Order.AlreadyHaveReturnRequest", $"Order Already Have Return Request", enErrorTypes.Conflict);
 
     public static Error OrderAlreadyHasDeliveryProof => Error.Create("Order.AlreadyHaveDeliveryProof", $"Order Already Have Delivery Proof", enErrorTypes.Conflict);
+
+    public static Error InvalidTrackingToken => Error.Create("Order.InvalidTrackingToken", "The tracking token is invalid.", enErrorTypes.NotFound);
 }

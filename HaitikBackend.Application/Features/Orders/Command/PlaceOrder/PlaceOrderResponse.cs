@@ -1,3 +1,3 @@
 ﻿namespace HaitikBackend.Application.Features.Orders.Command.PlaceOrder;
 
-public sealed record PlaceOrderResponse(int OrderId, string TrackingToken);
+public sealed record PlaceOrderResponse(int OrderId);

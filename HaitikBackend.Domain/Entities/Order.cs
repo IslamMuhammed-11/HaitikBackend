@@ -16,6 +16,8 @@ public partial class Order : BaseEntity
 
     public string CustomerPhoneNumber { get; private set; } = null!;
 
+    public string? CustomerEmail { get; private set; }
+
     public int? AssignedDriver { get; private set; }
 
     public DateTime CreatedAt { get; private set; }
@@ -32,10 +34,11 @@ public partial class Order : BaseEntity
     {
     }
 
-    private Order(enOrderStatus status, string customerPhoneNumber, int? assignedDriver, DateTime createdAt, GeoLocation pickupLocation, int employeeId, string? trackingTokenHash)
+    private Order(enOrderStatus status, string customerPhoneNumber, string? email, int? assignedDriver, DateTime createdAt, GeoLocation pickupLocation, int employeeId, string? trackingTokenHash)
     {
         Status = status;
         CustomerPhoneNumber = customerPhoneNumber;
+        CustomerEmail = email;
         AssignedDriver = assignedDriver;
         CreatedAt = createdAt;
         DeliveryLocation = pickupLocation;
@@ -45,17 +48,17 @@ public partial class Order : BaseEntity
     }
 
 
-    public static Order Create(string customerPhoneNumber, DateTime createdAt, GeoLocation pickupLocation, int agencyId, string? trackingTokenHash,
+    public static Order Create(string customerPhoneNumber, string? email, DateTime createdAt, GeoLocation pickupLocation, int agencyId, string? trackingTokenHash,
                                                  enOrderStatus status = enOrderStatus.Pending, int? assignedDriver = null)
     {
         return
-            new Order(status, customerPhoneNumber, assignedDriver, createdAt, pickupLocation, agencyId, trackingTokenHash);
+            new Order(status, customerPhoneNumber, email, assignedDriver, createdAt, pickupLocation, agencyId, trackingTokenHash);
 
 
     }
 
 
-   
+
 
     public Result SetStatusAsReceivedPackage() =>
         _ChangeOrderStatus(enOrderStatus.ReceivedPackage);
@@ -104,6 +107,11 @@ public partial class Order : BaseEntity
             assignment.MarkAsExpired();
     }
 
+    public void SetTrackingToken(string hashedToken)
+    {
+        TrackingTokenHash = hashedToken;
+    }
+
     public Result ProofDelivery(string imageUrl, string reciverName, string? deliveryNotes, DateTime deliveredAt)
     {
 
@@ -141,7 +149,7 @@ public partial class Order : BaseEntity
 
         Status = status;
 
-        Raise(new OrderStatusChangedEvent(Id, status, DateTime.Now));
+        Raise(new OrderStatusChangedEvent(Id,CustomerEmail, status, DateTime.Now));
 
         return Result.Success();
     }

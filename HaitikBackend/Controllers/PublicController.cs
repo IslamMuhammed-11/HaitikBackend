@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HaitikBackend.Application.Features.PublicTracking.TrackOrder;
+using HaitikBackend.Extensions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HaitikBackend.API.Controllers;
 
@@ -6,12 +9,18 @@ namespace HaitikBackend.API.Controllers;
 [ApiController]
 public class PublicController : ControllerBase
 {
+    private readonly IMediator _mediator;
 
+    public PublicController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
 
-    [HttpGet("track/{token}")]
+    [HttpGet("Track/{token}")]
     public async Task<IActionResult> TrackOrder(string token)
     {
-        throw new NotImplementedException();
+        var result = await _mediator.Send(new TrackOrderQuery(token));
+        return result.ToActionResult();
     }
 
 

@@ -21,6 +21,7 @@ internal class DriverRepository : GenericRepository<Driver>, IDriverRepository
     {
         return await _dbSet
             .Include(d => d.DriverLocationPing)
+            .Include(d => d.Orders)
             .FirstOrDefaultAsync(d => d.UserId == Id, ct);
     }
 

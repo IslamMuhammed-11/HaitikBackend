@@ -13,6 +13,7 @@ public class OrderConfig : IEntityTypeConfiguration<Order>
 
         builder.Property(e => e.Id).HasColumnName("id");
         builder.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetime())");
+        builder.Property(e => e.CustomerEmail).HasMaxLength(100);
 
         builder.OwnsOne(e => e.DeliveryLocation, dl =>
         {
