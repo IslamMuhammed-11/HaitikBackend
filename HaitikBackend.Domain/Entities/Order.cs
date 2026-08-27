@@ -147,9 +147,11 @@ public partial class Order : BaseEntity
         if (!CheckOrderTransitionsEligibility.Check(Status, status))
             return Result.Failed(OrderErrors.InvalidStatusTransition);
 
+        OrderStatusHistories.Add(OrderStatusHistory.Log(Id, Status, status, DateTime.Now).Value!);
+
         Status = status;
 
-        Raise(new OrderStatusChangedEvent(Id,CustomerEmail, status, DateTime.Now));
+        Raise(new OrderStatusChangedEvent(Id, CustomerEmail, status, DateTime.Now));
 
         return Result.Success();
     }

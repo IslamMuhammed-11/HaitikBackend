@@ -31,7 +31,7 @@ public partial class OrderStatusHistory : BaseEntity
         UpdatedAt = updatedAt;
     }
 
-    public static Result<OrderStatusHistory> Create(int orderId, enOrderStatus lastStatus, enOrderStatus currentStatus, DateTime updatedAt)
+    public static Result<OrderStatusHistory> Log(int orderId, enOrderStatus lastStatus, enOrderStatus currentStatus, DateTime updatedAt)
     {
         if (!CheckOrderTransitionsEligibility.Check(lastStatus, currentStatus))
             return Result<OrderStatusHistory>.Failed(OrderErrors.InvalidStatusTransition);
