@@ -24,12 +24,12 @@ public class CreateOtpHandler : IRequestHandler<CreateOtpCommand, Result>
 
     public async Task<Result> Handle(CreateOtpCommand request, CancellationToken cancellationToken)
     {
-        bool orderExist = await _unitOfWork.Orders.DoesExist(request.OrderId, cancellationToken);
+        var order = await _unitOfWork.Orders.GetByIdAsync(request.OrderId, cancellationToken);
 
-        if (!orderExist)
+        if (order is null)
             return Result.Failed(OrderErrors.OrderNotFound(request.OrderId));
 
-        var otp = CreateOtp(request.OrderId, request.Purpose);
+        var otp = CreateOtp(order, request.Purpose);
 
         _unitOfWork.OtpCodes.Add(otp);
 
@@ -39,7 +39,7 @@ public class CreateOtpHandler : IRequestHandler<CreateOtpCommand, Result>
     }
 
 
-    private OtpCode CreateOtp(int orderId, enOtpPurpose purpose)
+    private OtpCode CreateOtp(Order order, enOtpPurpose purpose)
     {
         const int OtpValidityMinutes = 5;
 
@@ -49,11 +49,11 @@ public class CreateOtpHandler : IRequestHandler<CreateOtpCommand, Result>
 
         var hashed = _passwordHasher.HashPassword(otpCode);
 
-        var otp = OtpCode.Create(orderId, hashed, expiry, purpose);
+        var otp = OtpCode.Create(order.Id, hashed, expiry, purpose);
 
-        
 
-        otp.Raise(new OtpCreatedEvent(orderId, otpCode));
+
+        otp.Raise(new OtpCreatedEvent(order.Id, order.CustomerEmail, otpCode));
 
         return otp;
     }

@@ -11,6 +11,9 @@ public class OrderProfile : Profile
         CreateMap<Order, OrderDetails>()
             .ForMember(dest => dest.AgencyName, opt => opt
             .MapFrom(e => e.Agency.Name))
-            .ReverseMap();
+            .ForMember(dest => dest.Latitude,
+            opt => opt.MapFrom(e => e.Agency.Location.CurrentLocation.Y))
+            .ForMember(dest => dest.Longitude,
+            opt => opt.MapFrom(e => e.Agency.Location.CurrentLocation.X));
     }
 }

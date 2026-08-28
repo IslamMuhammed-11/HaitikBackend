@@ -47,7 +47,7 @@ public partial class OtpCode : BaseEntity
         return Result.Failed(OtpErrors.OtpInvalid);
     }
 
-    public bool IsExpired(DateTime date) => ExpiryDate > date;
+    public bool IsExpired(DateTime date) => ExpiryDate < date;
 
     public const int MaximumAttempts = 10;
 

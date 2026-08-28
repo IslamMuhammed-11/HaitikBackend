@@ -15,7 +15,9 @@ public sealed record OrderDetails
 
     public DateTime CreatedAt { get; init; }
 
-    public GeoLocation PickupLocation { get; init; } = null!;
+    public double Latitude { get; init; }
+
+    public double Longitude { get; init; }
 
     public int AgencyId { get; init; }
 

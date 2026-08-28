@@ -1,6 +1,7 @@
 ﻿using HaitikBackend.Application.Abstractions;
 using HaitikBackend.Application.Features.OrderDriverAssignments.Commands.AutoAssignment;
 using HaitikBackend.Application.Features.OrderDriverAssignments.Commands.FallBackCheck;
+using HaitikBackend.Application.Features.Otp.CreateOtp;
 using HaitikBackend.Application.Features.PublicTracking.CreateTrackingAccess;
 using HaitikBackend.Domain.Enums;
 using HaitikBackend.Domain.Models.Driver;
@@ -39,8 +40,10 @@ public class BackgroundJobs : IBackgroundJobs
         return Task.CompletedTask;
     }
 
-    public Task EnqueueSendOrderDeliveryOtp(int ordrId)
+    public Task EnqueueSendOrderDeliveryOtp(int orderId, enOtpPurpose purpose)
     {
+        BackgroundJob.Enqueue<IMediator>(e => e.Send(new CreateOtpCommand(orderId, purpose)));
+
         return Task.CompletedTask;
     }
 

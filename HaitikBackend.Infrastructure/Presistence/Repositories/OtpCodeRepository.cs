@@ -13,6 +13,6 @@ internal class OtpCodeRepository : GenericRepository<OtpCode>, IOtpCodeRepositor
 
     public async Task<OtpCode?> GetByOrderIdAsync(int orderId, enOtpPurpose purpose, CancellationToken cancellationToken)
     {
-        return await _context.OtpCodes.FirstOrDefaultAsync(o => o.OrderId == orderId && o.Purpose == purpose, cancellationToken);
+        return await _context.OtpCodes.OrderByDescending(o => o.ExpiryDate).FirstOrDefaultAsync(o => o.OrderId == orderId && o.Purpose == purpose, cancellationToken);
     }
 }

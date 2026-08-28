@@ -1,5 +1,6 @@
 ﻿using HaitikBackend.Application.Abstractions;
 using HaitikBackend.Domain.DomainEvents.OrderEvents;
+using HaitikBackend.Domain.Enums;
 using MediatR;
 
 namespace HaitikBackend.Application.EventHandlers.OrderEvents;
@@ -16,6 +17,6 @@ public class DeliveryProofWasUploadedEventHandler : INotificationHandler<Deliver
 
     public Task Handle(DeliveryProofWasUploadedEvent notification, CancellationToken cancellationToken)
     {
-        return _backgroundJobs.EnqueueSendOrderDeliveryOtp(notification.orderId);
+        return _backgroundJobs.EnqueueSendOrderDeliveryOtp(notification.orderId , enOtpPurpose.Delivery);
     }
 }
