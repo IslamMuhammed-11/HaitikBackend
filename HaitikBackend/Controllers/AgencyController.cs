@@ -3,8 +3,10 @@ using HaitikBackend.Application.Features.GovernmentAgencies.Qureies.GetAgenciesP
 using HaitikBackend.Application.Features.GovernmentAgencies.Qureies.GetAgencyDetails;
 using HaitikBackend.Extensions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using HaitikBackend.Authorization;
 
 namespace HaitikBackend.API.Controllers;
 
@@ -21,6 +23,7 @@ public class AgencyController : ControllerBase
 
     // POST: api/agency
     [HttpPost]
+    [Authorize(Policy = AuthorizationPolicies.Admin)]
     public async Task<IActionResult> AddAgency([FromBody] RegisterAgencyCommand command)
     {
         var result = await _mediator.Send(command);
@@ -29,6 +32,8 @@ public class AgencyController : ControllerBase
 
     // GET: api/agency/{id}
     [HttpGet("{id}")]
+    [Authorize(Policy = AuthorizationPolicies.Agency)]
+    [Authorize(Policy = AuthorizationPolicies.AgencyOwnership)]
     public async Task<IActionResult> GetAgencyById(int id)
     {
         var query = new GetAgencyDetailsQuery(id);
@@ -38,6 +43,7 @@ public class AgencyController : ControllerBase
 
     // GET: api/agency?pageSize=10&pageNumber=1
     [HttpGet]
+    [Authorize(Policy = AuthorizationPolicies.Admin)]
     public async Task<IActionResult> GetAllAgencies([FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 1)
     {
         var query = new GetAgenciesPageQuery(pageSize, pageNumber);

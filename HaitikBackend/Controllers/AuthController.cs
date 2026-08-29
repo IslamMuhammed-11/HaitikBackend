@@ -5,12 +5,14 @@ using HaitikBackend.Application.Features.Drivers.Commands.RegiesterDriver;
 using HaitikBackend.Application.Features.GovernmentAgencies.Commands.AddAgency;
 using HaitikBackend.Extensions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HaitikBackend.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[AllowAnonymous]
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;

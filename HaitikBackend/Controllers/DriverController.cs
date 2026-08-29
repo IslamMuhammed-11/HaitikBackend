@@ -9,7 +9,9 @@ using HaitikBackend.Application.Features.Otp.VerifyOtp;
 using HaitikBackend.Domain.Enums;
 using HaitikBackend.Extensions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using HaitikBackend.Authorization;
 
 namespace HaitikBackend.Controllers;
 

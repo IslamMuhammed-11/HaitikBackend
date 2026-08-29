@@ -2,6 +2,8 @@
 using HaitikBackend.Application.Features.Users.Queries.GetUserDetails;
 using HaitikBackend.Extensions;
 using MediatR;
+using HaitikBackend.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +11,7 @@ namespace HaitikBackend.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Policy = AuthorizationPolicies.Admin)]
 public class AdminController : ControllerBase
 {
     private readonly IMediator _mediator;

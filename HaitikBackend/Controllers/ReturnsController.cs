@@ -3,7 +3,9 @@ using HaitikBackend.Application.Features.Return.Commands.RejectReturn;
 using HaitikBackend.Application.Features.Return.Commands.RequestReturn;
 using HaitikBackend.Extensions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using HaitikBackend.Authorization;
 
 namespace HaitikBackend.Controllers;
 
@@ -19,6 +21,7 @@ public class ReturnsController : ControllerBase
     }
 
     [HttpPost("{id}/approve")]
+    [Authorize(Policy = AuthorizationPolicies.Admin)]
     public async Task<IActionResult> ApproveReturn(int id, [FromBody] AcceptReturnCommand command)
     {
         var cmd = command with { orderId = id };
@@ -27,6 +30,7 @@ public class ReturnsController : ControllerBase
     }
 
     [HttpPost("{id}/reject")]
+    [Authorize(Policy = AuthorizationPolicies.Admin)]
     public async Task<IActionResult> RejectReturn(int id, [FromBody] RejectReturnCommand command)
     {
         var cmd = command with { orderId = id };
@@ -36,6 +40,8 @@ public class ReturnsController : ControllerBase
 
 
     [HttpPost("{id}/request")]
+    [Authorize(Policy = AuthorizationPolicies.Agency)]
+    [Authorize(Policy = AuthorizationPolicies.OrderOwnership)]
     public async Task<IActionResult> RequestReturn(int id, [FromBody] RequestReturnCommand command)
     {
         var cmd = command with { orderId = id };

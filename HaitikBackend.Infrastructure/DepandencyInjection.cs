@@ -38,6 +38,7 @@ public static class DepandencyInjection
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IOwnershipService, OwnershipService>();
 
         services.Configure<EmailSettings>(configuration.GetSection(EmailSettings.SectionName));
 
