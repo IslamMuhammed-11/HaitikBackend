@@ -1,17 +1,18 @@
 using HaitikBackend.API.Hubs;
-using HaitikBackend.Authorization;
 using HaitikBackend.Application;
 using HaitikBackend.Application.Abstractions;
+using HaitikBackend.Authorization;
 using HaitikBackend.Infrastructure;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +36,27 @@ builder.Services.AddSwaggerGen(options =>
         In = ParameterLocation.Header,
         Description = "Enter: Bearer {token}"
     });
-    options.OperationFilter<SwaggerAuthorizationOperationFilter>();
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    // Reference the previously defined "Bearer" security scheme.
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+
+                // No scopes are required for JWT Bearer authentication.
+                // This array is empty because JWT does not use OAuth scopes here.
+                new string[] { }
+            }
+        });
+
+    //options.OperationFilter<SwaggerAuthorizationOperationFilter>();
 
 });
 
