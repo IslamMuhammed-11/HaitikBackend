@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace HaitikBackend.Authorization;
 
-public sealed class OrderOwnershipHandler : AuthorizationHandler<OrderOwnershipRequirement , OrderDetails >
+public sealed class OrderOwnershipHandler : AuthorizationHandler<OrderOwnershipRequirement>
 {
     private readonly IOwnershipService _ownershipService;
 
@@ -16,8 +16,7 @@ public sealed class OrderOwnershipHandler : AuthorizationHandler<OrderOwnershipR
 
     protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
-        OrderOwnershipRequirement requirement,
-        OrderDetails? order)
+        OrderOwnershipRequirement requirement)
     {
         if (context.User.IsInRole("admin"))
         {

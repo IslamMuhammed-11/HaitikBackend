@@ -36,6 +36,7 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Enter: Bearer {token}"
     });
     options.OperationFilter<SwaggerAuthorizationOperationFilter>();
+
 });
 
 var jwtKey = builder.Configuration["Jwt:Key"]
@@ -49,14 +50,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
+
             IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtKey)),
+
             ValidateIssuer = true,
+
             ValidIssuer = jwtIssuer,
+
             ValidateAudience = true,
+
             ValidAudience = jwtAudience,
+
             ValidateLifetime = true,
+
             ClockSkew = TimeSpan.Zero,
+
             NameClaimType = ClaimTypes.NameIdentifier,
+
             RoleClaimType = ClaimTypes.Role
         };
     });
@@ -116,16 +126,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<HaitikBackend.Middleware.GlobalExceptionMiddleware>();
-
 app.UseHttpsRedirection();
 
+app.UseMiddleware<HaitikBackend.Middleware.GlobalExceptionMiddleware>();
+
 app.UseRateLimiter();
+
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
-
 
 
 app.UseHangfireDashboard();
