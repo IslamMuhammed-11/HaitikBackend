@@ -9,6 +9,7 @@ namespace HaitikBackend.Controllers;
 
 [ApiController]
 [Route("api/orders")]
+[Authorize(Policy = AuthorizationPolicies.Admin)]
 public class AssignmentController : ControllerBase
 {
     private readonly IMediator _mediator;

@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /.github/copilot-instructions.md
+.vscode/launch.json
+.vscode/tasks.json

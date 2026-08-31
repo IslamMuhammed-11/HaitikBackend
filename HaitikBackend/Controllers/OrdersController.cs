@@ -1,5 +1,5 @@
-using HaitikBackend.Application.Common.Models.FileModels;
 using HaitikBackend.Application.Abstractions;
+using HaitikBackend.Application.Common.Models.FileModels;
 using HaitikBackend.Application.Features.Orders.Command.BulkUpload;
 using HaitikBackend.Application.Features.Orders.Command.ChangeLocation;
 using HaitikBackend.Application.Features.Orders.Command.MarkAsDelivering;
@@ -27,12 +27,12 @@ namespace HaitikBackend.Controllers;
 public class OrdersController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IOwnershipService _ownershipService;
+    private readonly IOrderOwnershipService _orderOwnership;
 
-    public OrdersController(IMediator mediator, IOwnershipService ownershipService)
+    public OrdersController(IMediator mediator, IOrderOwnershipService orderOwnership)
     {
         _mediator = mediator;
-        _ownershipService = ownershipService;
+        _orderOwnership = orderOwnership;
     }
 
     [HttpPost]
@@ -109,6 +109,8 @@ public class OrdersController : ControllerBase
     [Authorize(Policy = AuthorizationPolicies.Driver)]
     public async Task<IActionResult> GetDriverOrders(int driverId, [FromQuery] enOrderStatus? status, [FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 1)
     {
+        // This is a self-access check (driver accessing their own order list), not Order resource ownership.
+        // Admin bypass is handled by the Driver policy (RequireRole("admin","driver")).
         if (!User.IsInRole("admin") &&
             (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var currentDriverId) ||
              currentDriverId != driverId))
@@ -131,14 +133,8 @@ public class OrdersController : ControllerBase
         if (!result.IsSuccess || result.Value is null)
             return result.ToActionResult();
 
-        if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var identityId))
-            return Unauthorized();
-
-        var canAccess = User.IsInRole("admin") ||
-            (User.IsInRole("driver") && result.Value.AssignedDriver == identityId) ||
-            (User.IsInRole("agency") && result.Value.AgencyId == identityId);
-
-        if (!canAccess)
+        // Ownership check reuses the already-loaded DTO — no extra database query.
+        if (!_orderOwnership.CanAccess(result.Value, User))
             return Forbid();
 
         return result.ToActionResult();
@@ -148,10 +144,7 @@ public class OrdersController : ControllerBase
     [Authorize(Roles = "agency")]
     public async Task<IActionResult> UpdateAddress(int id, [FromBody] ChangeLocationCommand command)
     {
-        if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var agencyId))
-            return Unauthorized();
-
-        if (!await _ownershipService.CanAccessAgencyAsync(agencyId, id))
+        if (!await _orderOwnership.CanAccessAsync(id, User))
             return Forbid();
 
         var cmd = command with { OrderId = id };
@@ -164,16 +157,11 @@ public class OrdersController : ControllerBase
     [Authorize(Roles = "driver")]
     public async Task<IActionResult> MarkOrderAsDelivering(int id)
     {
-        if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var driverId))
-            return Unauthorized();
-
-        if (!await _ownershipService.CanAccessDriverAsync(driverId, id))
+        if (!await _orderOwnership.CanAccessAsync(id, User))
             return Forbid();
 
         var cmd = new MarkAsDeliveringCommand(id);
-
         var result = await _mediator.Send(cmd);
-
         return result.ToActionResult();
     }
 

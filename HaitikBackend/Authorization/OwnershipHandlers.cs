@@ -1,51 +1,17 @@
-using HaitikBackend.Application.Features.Orders.Queries.Responses;
-using HaitikBackend.Application.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
 namespace HaitikBackend.Authorization;
 
-public sealed class OrderOwnershipHandler : AuthorizationHandler<OrderOwnershipRequirement>
-{
-    private readonly IOwnershipService _ownershipService;
-
-    public OrderOwnershipHandler(IOwnershipService ownershipService)
-    {
-        _ownershipService = ownershipService;
-    }
-
-    protected override async Task HandleRequirementAsync(
-        AuthorizationHandlerContext context,
-        OrderOwnershipRequirement requirement)
-    {
-        if (context.User.IsInRole("admin"))
-        {
-            context.Succeed(requirement);
-            return;
-        }
-
-        var httpContext = context.Resource as HttpContext;
-        if (!int.TryParse(context.User.FindFirstValue(ClaimTypes.NameIdentifier), out var identityId)) // might be DriverId might be AgencyId
-            return;
-
-        if (!int.TryParse(httpContext?.GetRouteValue("id")?.ToString(), out var orderId))
-            return;
-
-        var canAccess = context.User.IsInRole("agency")
-            ? await _ownershipService.CanAccessAgencyAsync(identityId, orderId)
-            : context.User.IsInRole("driver") &&
-              await _ownershipService.CanAccessDriverAsync(identityId, orderId);
-
-        if (canAccess)
-            context.Succeed(requirement);
-    }
-}
-
+/// <summary>
+/// Handles the "agency-ownership" policy.
+/// Verifies that the signed-in agency is the same as the resource agency ID.
+/// Used for self-access checks (e.g. GET /agency/{id}, GET /orders?agencyId=).
+/// This is distinct from Order ownership and is intentionally kept as a reusable policy.
+/// </summary>
 public sealed class AgencyOwnershipHandler : AuthorizationHandler<AgencyOwnershipRequirement, int?>
 {
-
-
-    protected override async Task HandleRequirementAsync(
+    protected override Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         AgencyOwnershipRequirement requirement,
         int? agencyId)
@@ -53,21 +19,16 @@ public sealed class AgencyOwnershipHandler : AuthorizationHandler<AgencyOwnershi
         if (context.User.IsInRole("admin"))
         {
             context.Succeed(requirement);
-            return;
+            return Task.CompletedTask;
         }
 
         if (!context.User.IsInRole("agency") ||
             !int.TryParse(context.User.FindFirstValue(ClaimTypes.NameIdentifier), out var signedAgencyId))
-            return;
-
-
+            return Task.CompletedTask;
 
         if (agencyId is not null && agencyId == signedAgencyId)
             context.Succeed(requirement);
 
+        return Task.CompletedTask;
     }
-
-
-
-
 }

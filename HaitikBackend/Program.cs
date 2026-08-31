@@ -100,12 +100,9 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(AuthorizationPolicies.Admin, policy => policy.RequireRole("admin"));
     options.AddPolicy(AuthorizationPolicies.Driver, policy => policy.RequireRole("admin", "driver"));
     options.AddPolicy(AuthorizationPolicies.Agency, policy => policy.RequireRole("admin", "agency"));
-    options.AddPolicy(AuthorizationPolicies.OrderOwnership, policy =>
-        policy.RequireAuthenticatedUser().Requirements.Add(new OrderOwnershipRequirement()));
     options.AddPolicy(AuthorizationPolicies.AgencyOwnership, policy =>
         policy.RequireAuthenticatedUser().Requirements.Add(new AgencyOwnershipRequirement()));
 });
-builder.Services.AddScoped<IAuthorizationHandler, OrderOwnershipHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, AgencyOwnershipHandler>();
 
 builder.Services.AddRateLimiter(options =>

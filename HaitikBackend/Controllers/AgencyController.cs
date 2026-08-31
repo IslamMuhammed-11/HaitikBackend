@@ -7,23 +7,28 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HaitikBackend.Authorization;
+using HaitikBackend.Application.Abstractions;
+using System.Security.Claims;
 
 namespace HaitikBackend.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+
 public class AgencyController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IOrderOwnershipService _orderOwnership;
 
-    public AgencyController(IMediator mediator)
+    public AgencyController(IMediator mediator, IOrderOwnershipService orderOwnership)
     {
         _mediator = mediator;
+        _orderOwnership = orderOwnership;
     }
 
     // POST: api/agency
     [HttpPost]
-    [Authorize(Policy = AuthorizationPolicies.Admin)]
+    [Authorize(Policy = AuthorizationPolicies.Agency)]
     public async Task<IActionResult> AddAgency([FromBody] RegisterAgencyCommand command)
     {
         var result = await _mediator.Send(command);
@@ -33,9 +38,14 @@ public class AgencyController : ControllerBase
     // GET: api/agency/{id}
     [HttpGet("{id}")]
     [Authorize(Policy = AuthorizationPolicies.Agency)]
-    [Authorize(Policy = AuthorizationPolicies.AgencyOwnership)]
     public async Task<IActionResult> GetAgencyById(int id)
     {
+        if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var agencyId))
+            return Unauthorized();
+
+        if (!User.IsInRole("admin") && agencyId != id)
+            return Forbid();
+
         var query = new GetAgencyDetailsQuery(id);
         var result = await _mediator.Send(query);
         return result.ToActionResult();
