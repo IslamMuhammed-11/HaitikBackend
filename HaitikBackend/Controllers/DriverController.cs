@@ -47,11 +47,11 @@ public class DriverController : ControllerBase
     [HttpPost("orders/{id}/accept")]
     public async Task<IActionResult> AcceptOrder(int id, [FromBody] AcceptAssignmentCommand command)
     {
-        if (!await _orderOwnership.CanAccessAsync(id, User))
-            return Forbid();
-
         if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var driverId))
             return Unauthorized();
+
+        if (!await _orderOwnership.CanAccessAsync(id, User))
+            return Forbid();
 
         var cmd = command with { OrderId = id, DriverId = driverId };
         var result = await _mediator.Send(cmd);
@@ -61,11 +61,11 @@ public class DriverController : ControllerBase
     [HttpPost("orders/{id}/reject")]
     public async Task<IActionResult> RejectOrder(int id, [FromBody] RejectAssignmentCommand command)
     {
-        if (!await _orderOwnership.CanAccessAsync(id, User))
-            return Forbid();
-
         if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var driverId))
             return Unauthorized();
+
+        if (!await _orderOwnership.CanAccessAsync(id, User))
+            return Forbid();
 
         var cmd = command with { OrderId = id, DriverId = driverId };
         var result = await _mediator.Send(cmd);
