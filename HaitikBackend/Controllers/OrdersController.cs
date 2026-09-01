@@ -1,3 +1,4 @@
+using HaitikBackend.API.Requests.Orders;
 using HaitikBackend.Application.Abstractions;
 using HaitikBackend.Application.Common.Models.FileModels;
 using HaitikBackend.Application.Features.Orders.Command.BulkUpload;
@@ -10,9 +11,11 @@ using HaitikBackend.Application.Features.Orders.Queries.GetOrderDetails;
 using HaitikBackend.Application.Features.Orders.Queries.GetOrdersByDriverPage;
 using HaitikBackend.Application.Features.Orders.Queries.Responses;
 using HaitikBackend.Application.Features.OrderStatusHistories.Queries.GetOrderStatusHistoriesPage;
+using HaitikBackend.Application.Features.OrderStatusHistories.Queries.GetOrderStatusHistory;
 using HaitikBackend.Authorization;
 using HaitikBackend.Domain.Common.Results;
 using HaitikBackend.Domain.Enums;
+using HaitikBackend.Domain.Errors;
 using HaitikBackend.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -37,8 +40,14 @@ public class OrdersController : ControllerBase
 
     [HttpPost]
     [Authorize(Policy = AuthorizationPolicies.Agency)]
-    public async Task<IActionResult> CreateOrder([FromBody] PlaceOrderCommand command)
+    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
     {
+
+        if(!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id))
+            return Unauthorized();
+
+        var command = new PlaceOrderCommand(request.CustomerPhoneNumber, request.CustomerEmail, request.Longitude, request.Latitude, id);
+
         var result = await _mediator.Send(command);
         return result.ToActionResult();
     }
@@ -86,7 +95,8 @@ public class OrdersController : ControllerBase
         if (!authResult.Succeeded)
             return Forbid();
 
-        var result = Result<OrdersPageResponse>.Success();
+
+        var result = Result<OrdersPageResponse>.Failed(OrderErrors.OrderNotFound(0));
 
         if (agencyId.HasValue)
         {
@@ -166,11 +176,28 @@ public class OrdersController : ControllerBase
     }
 
     [HttpGet("history")]
-    [Authorize(Policy = AuthorizationPolicies.Agency)]
+    [Authorize(Policy = AuthorizationPolicies.Admin)]
     public async Task<IActionResult> GetOrderHistory([FromQuery] int pageSize = 10, [FromQuery] int pageNumber = 1)
     {
         var query = new GetOrderStatusHistoriesPageQuery(pageSize, pageNumber);
         var result = await _mediator.Send(query);
         return result.ToActionResult();
     }
+
+
+
+    [HttpGet("{id}/history")]
+    [Authorize(Policy = AuthorizationPolicies.Agency)]
+
+    public async Task<IActionResult> GetOrderHistoryById(int id)
+    {
+        if (!await _orderOwnership.CanAccessAsync(id, User))
+            return Forbid();
+
+        var query = new GetOrderStatusHistoryQuery(id);
+        var result = await _mediator.Send(query);
+
+        return result.ToActionResult();
+    }
+
 }

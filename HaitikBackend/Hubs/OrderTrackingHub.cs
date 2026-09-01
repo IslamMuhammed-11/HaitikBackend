@@ -1,9 +1,11 @@
 ﻿using HaitikBackend.Application.Features.PublicTracking.TrackOrder;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace HaitikBackend.API.Hubs;
 
+[AllowAnonymous] // for now
 public class OrderTrackingHub : Hub
 {
     private readonly IMediator _mediator;

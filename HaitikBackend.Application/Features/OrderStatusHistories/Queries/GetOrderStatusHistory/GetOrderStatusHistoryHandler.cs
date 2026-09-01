@@ -22,6 +22,12 @@ public class GetOrderStatusHistoryHandler : IRequestHandler<GetOrderStatusHistor
 
     public async Task<Result<OrderStatusHistoryResponse>> Handle(GetOrderStatusHistoryQuery request, CancellationToken cancellationToken)
     {
+
+        bool orderExist = await _unitOfWork.Orders.DoesExist(request.OrderId);
+
+        if (!orderExist)
+            return Result<OrderStatusHistoryResponse>.Failed(OrderErrors.OrderNotFound(request.OrderId));
+
         var item = await _unitOfWork.OrderStatusHistory.Query()
             .AsNoTracking()
             .Where(e => e.Id == request.OrderId)
@@ -29,7 +35,8 @@ public class GetOrderStatusHistoryHandler : IRequestHandler<GetOrderStatusHistor
             .FirstOrDefaultAsync(cancellationToken);
 
         if (item is null)
-            return Result<OrderStatusHistoryResponse>.Failed(OrderErrors.OrderNotFound(request.OrderId));
+            return Result<OrderStatusHistoryResponse>.Failed(OrderStatusHistoryErrors.HistoryNotFoundOrderStillPending);
+
 
         return Result<OrderStatusHistoryResponse>.Success(item);
     }

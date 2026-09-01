@@ -7,7 +7,6 @@ using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
@@ -150,16 +149,15 @@ app.UseMiddleware<HaitikBackend.Middleware.GlobalExceptionMiddleware>();
 
 app.UseRateLimiter();
 
+app.MapHangfireDashboard("/hangfire").AllowAnonymous();
+
 app.UseAuthentication();
+
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-
-app.UseHangfireDashboard();
-
-app.MapHangfireDashboard("/hangfire");
 
 
 app.MapHub<DriverTrackingHub>("hubs/driver-tracking");

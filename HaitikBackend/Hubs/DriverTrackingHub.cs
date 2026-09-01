@@ -1,10 +1,14 @@
 ﻿using HaitikBackend.Application.Features.DriverLocationPings.Commands.PingLocation;
 using HaitikBackend.Domain.ValueObjects;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
 
 namespace HaitikBackend.API.Hubs;
 
+
+[AllowAnonymous] // for now
 public class DriverTrackingHub : Hub
 {
 
@@ -19,7 +23,13 @@ public class DriverTrackingHub : Hub
 
     public override Task OnConnectedAsync()
     {
+
+        //Auth
+
+
         return base.OnConnectedAsync();
+        
+        
     }
 
     public async Task SendLocation(double latitude, double longitude , int driverId)
